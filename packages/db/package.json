@@ -1,0 +1,10 @@
+{
+  "name": "db",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@prisma/client": "^7.5.0",
+    "prisma": "^7.5.0"
+  }
+}

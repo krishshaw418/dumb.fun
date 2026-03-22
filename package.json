@@ -1,0 +1,14 @@
+{
+  "name": "pumpfun-clone",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "dev:indexer": "yarn workspace indexer ts-node-dev src/index.ts",
+    "dev:api": "yarn workspace api ts-node-dev src/index.ts",
+    "dev:web": "yarn workspace web dev",
+    "build": "yarn workspaces run build"
+  },
+  "private": "true",
+  "workspaces": ["apps/*", "packages/*"]
+}
