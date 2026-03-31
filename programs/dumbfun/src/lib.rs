@@ -1,6 +1,6 @@
 use anchor_lang::prelude::*;
 use anchor_lang::system_program::{self, Transfer};
-use anchor_spl::token::{self, Mint, MintTo, Token, TokenAccount};
+use anchor_spl::token::{self, Mint, MintTo, Token, TokenAccount, Burn};
 
 declare_id!("2DpuFtJtaodDo44Ae9VxV1JBjxu3SqRaoJa1ktLTZ7kb");
 
@@ -42,6 +42,7 @@ pub mod dumbfun {
         Ok(())
     }
 
+    // Instruction to buy token
     pub fn buy(ctx: Context<Buy>, sol_amount: u64, min_tokens_out: u64,) -> Result<()> {
         let bonding_curve = &mut ctx.accounts.bonding_curve;
 
@@ -127,6 +128,76 @@ pub mod dumbfun {
 
         Ok(())
     }
+
+    // Instruction to sell token
+    pub fn sell(ctx: Context<Sell>, token_amount: u64) -> Result<()> {
+        let bonding_curve = &mut ctx.accounts.bonding_curve;
+
+        // 1. Validation
+        require!(!bonding_curve.is_migrated, CustomError::CurveMigrated);
+        require!(token_amount > 0, CustomError::InvalidAmount);
+
+        // 2. Compute current price
+        let supply = bonding_curve.supply as u128;
+        let k = bonding_curve.k as u128;
+        let base = bonding_curve.base_price as u128;
+
+        let current_price = base + k * supply;
+
+        // 3. Compute the SOL out
+        let sol_out = (token_amount as u128)
+        .checked_mul(current_price)
+        .ok_or(CustomError::MathOverflow)? as u64;
+
+        require!(sol_out > 0, CustomError::InsufficientOutput);
+
+        // 4. Reserve safety check
+        require!(bonding_curve.reserve > sol_out, CustomError::InsufficientReserve);
+
+        // 5. Burn tokens from user
+        let cpi_ctx = CpiContext::new(
+            ctx.accounts.token_program.to_account_info(),
+            Burn {
+                mint: ctx.accounts.mint_account.to_account_info(),
+                from: ctx.accounts.user_token_account.to_account_info(),
+                authority: ctx.accounts.user.to_account_info()
+            }
+        );
+
+        token::burn(cpi_ctx, token_amount)?;
+
+        // 6. Transfer SOL to user
+        **bonding_curve.to_account_info().try_borrow_mut_lamports()? -= sol_out; // Direct lamport manipulation as it's fastest way
+        **ctx.accounts.user.to_account_info().try_borrow_mut_lamports()? += sol_out; // Direct lamport manipulation as it's fastest way
+
+        // 7. State update 
+        bonding_curve.supply = bonding_curve
+            .supply
+            .checked_sub(token_amount)
+            .ok_or(CustomError::MathOverflow)?;
+
+        bonding_curve.reserve = bonding_curve
+        .reserve
+        .checked_sub(sol_out)
+        .ok_or(CustomError::MathOverflow)?;
+
+        // 8. Compute price
+        let new_price = base + k * (bonding_curve.supply as u128);
+
+        // 9. Emit evnt
+        emit!(SellEvent {
+            mint: bonding_curve.mint,
+            user: ctx.accounts.user.key(),
+            token_amount,
+            sol_amount: sol_out,
+            new_supply: bonding_curve.supply,
+            new_reserve: bonding_curve.reserve,
+            price: new_price as u64,
+            timestamp: Clock::get()?.unix_timestamp,
+        });
+
+        Ok(())
+    }
 }
 
  
@@ -183,6 +254,36 @@ pub struct Buy<'info> {
     pub system_program: Program<'info, System> // used for transfering SOL from user to the pda reserve (transfer instruction)
 }
 
+#[derive(Accounts)]
+pub struct Sell<'info> {
+    #[account(
+        mut,
+        seeds = [b"bonding_curve", mint.key().as_ref()],
+        bump = bonding_curve.bump
+    )]
+    pub bonding_curve: Account<'info, BondingCurve>,
+
+    pub user: Signer<'info>,
+
+    // CHECK: used for pda seed
+    pub mint: AccountInfo<'info>,
+
+    #[account(
+        mut, // as the token balance increases after buy
+        constraint = user_token_account.mint == mint_account.key(), // ensures that the user is minting the right token
+        constraint = user_token_account.owner == user.key() // ensures user actually owns this token account
+    )]
+    pub user_token_account: Account<'info, TokenAccount>, // The ata that holds the user's newly bought token
+
+    #[account(
+        constraint = mint_account.key() == mint.key(),
+        constraint = mint_account.mint_authority.unwrap() == bonding_curve.key()
+    )]
+    pub mint_account: Account<'info, Mint>,
+
+    pub token_program: Program<'info, Token>,
+}
+
 #[account]
 #[derive(InitSpace)]
 pub struct BondingCurve {
@@ -223,8 +324,11 @@ pub enum CustomError {
     #[msg("Output too small")]
     InsufficientOutput,
 
-    #[msg("Slippage Exceeded")]
-    SlippageExceeded
+    #[msg("Slippage exceeded")]
+    SlippageExceeded,
+
+    #[msg("Insufficient reserve")]
+    InsufficientReserve
 }
 
 #[event]
@@ -242,6 +346,18 @@ pub struct BuyEvent {
     pub user: Pubkey,
     pub sol_amount: u64,
     pub token_amount: u64,
+    pub new_supply: u64,
+    pub new_reserve: u64,
+    pub price: u64,
+    pub timestamp: i64
+}
+
+#[event]
+pub struct SellEvent {
+    pub mint: Pubkey,
+    pub user: Pubkey,
+    pub token_amount: u64,
+    pub sol_amount: u64,
     pub new_supply: u64,
     pub new_reserve: u64,
     pub price: u64,
