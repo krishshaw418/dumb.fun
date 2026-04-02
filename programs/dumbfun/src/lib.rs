@@ -2,7 +2,7 @@ use anchor_lang::prelude::*;
 use anchor_lang::system_program::{self, Transfer};
 use anchor_spl::token::{self, Mint, MintTo, Token, TokenAccount, Burn};
 
-declare_id!("2DpuFtJtaodDo44Ae9VxV1JBjxu3SqRaoJa1ktLTZ7kb");
+declare_id!("5Xa2CjDwCgoY9vTWShUxAb7AyCgdKUa8xXaFuv25QFex");
 
 #[program]
 pub mod dumbfun {
@@ -142,7 +142,8 @@ pub mod dumbfun {
         let k = bonding_curve.k as u128;
         let base = bonding_curve.base_price as u128;
 
-        let current_price = base + k * supply;
+        let new_supply = supply.checked_sub(token_amount as u128).ok_or(CustomError::MathOverflow)?;
+        let current_price = base + k * new_supply;
 
         // 3. Compute the SOL out
         let sol_out = (token_amount as u128)
@@ -152,7 +153,7 @@ pub mod dumbfun {
         require!(sol_out > 0, CustomError::InsufficientOutput);
 
         // 4. Reserve safety check
-        require!(bonding_curve.reserve > sol_out, CustomError::InsufficientReserve);
+        require!(bonding_curve.reserve >= sol_out, CustomError::InsufficientReserve);
 
         // 5. Burn tokens from user
         let cpi_ctx = CpiContext::new(
@@ -263,9 +264,10 @@ pub struct Sell<'info> {
     )]
     pub bonding_curve: Account<'info, BondingCurve>,
 
+    #[account(mut)]
     pub user: Signer<'info>,
 
-    // CHECK: used for pda seed
+    /// CHECK: used for pda seed
     pub mint: AccountInfo<'info>,
 
     #[account(
@@ -276,6 +278,7 @@ pub struct Sell<'info> {
     pub user_token_account: Account<'info, TokenAccount>, // The ata that holds the user's newly bought token
 
     #[account(
+        mut,
         constraint = mint_account.key() == mint.key(),
         constraint = mint_account.mint_authority.unwrap() == bonding_curve.key()
     )]
