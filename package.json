@@ -7,9 +7,10 @@
     "dev:indexer": "yarn workspace indexer ts-node-dev src/index.ts",
     "dev:api": "yarn workspace api ts-node-dev src/index.ts",
     "dev:web": "yarn workspace web dev",
-    "build": "yarn workspaces run build"
+    "build": "yarn workspaces run build",
+    "db:generate": "yarn workspace db db:generate",
+    "db:migrate": "yarn workspace db db:migrate"
   },
-  "private": "true",
   "workspaces": [
     "apps/*",
     "packages/*"
@@ -24,5 +25,6 @@
     "@coral-xyz/anchor": "^0.32.1",
     "@solana/spl-token": "^0.4.14",
     "@solana/web3.js": "^1.98.4"
-  }
+  },
+  "packageManager": "yarn@4.13.0"
 }

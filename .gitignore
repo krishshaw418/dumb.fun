@@ -1,7 +1,25 @@
+# Node / JS
 node_modules
+
+# Yarn Berry
+.yarn/*
+
+# Build outputs
+dist/
+build/
+.out/
 target
+
+# Anchor / Solana
+target/
+**/target/
+dist/
+test-ledger/
+.anchor/
+
+
+# environment variables
 .env
-dist
-.cache
-test-ledger
-.anchor
+
+# prisma
+generated

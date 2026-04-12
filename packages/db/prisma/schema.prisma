@@ -11,3 +11,43 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Token {
+  mint String @id
+  creator String
+  name String?
+  symbol String?
+  uri String?
+  createdAt DateTime @default(now())
+
+  bondingCurve BondingCurveState?
+  trades Trade[]
+}
+
+model Trade {
+  id String @id @default(uuid())
+  mint String
+  direction Direction
+  user String
+  solAmount BigInt
+  tokenAmount BigInt
+  timeStamp DateTime
+
+  token Token @relation(fields: [mint], references: [mint])
+}
+
+model BondingCurveState {
+  mint String @id
+  creator String
+  supply BigInt
+  reserve BigInt
+  is_migrated Boolean @default(false)
+  updatedAt DateTime @updatedAt
+
+  token Token @relation(fields: [mint], references: [mint])
+}
+
+enum Direction {
+  buy
+  sell
+}
