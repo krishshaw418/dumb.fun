@@ -1,6 +1,6 @@
 import * as anchor from "@coral-xyz/anchor";
 import { Program } from "@coral-xyz/anchor";
-import { Dumbfun } from "../target/types/dumbfun";
+import type { Dumbfun } from "../target/types/dumbfun";
 import {
   Keypair,
   LAMPORTS_PER_SOL,
@@ -14,6 +14,7 @@ import {
   AuthorityType
 } from "@solana/spl-token";
 import { strict as assert } from "assert";
+import { BN } from "bn.js";
 
 
 describe("program", () => {
@@ -63,8 +64,8 @@ describe("program", () => {
     )
 
     // 5. Call initialize
-    const k = new anchor.BN(2);
-    const base_price = new anchor.BN(10);
+    const k = new BN(2);
+    const base_price = new BN(10);
     await program.methods
       .initialize(k, base_price)
       .accounts({
@@ -116,7 +117,7 @@ describe("program", () => {
     // 1. Create a mint
     const mint = await createMint(
       provider.connection,
-      user.payer,
+      user.payer as anchor.web3.Signer,
       user.publicKey,
       null,
       6
@@ -130,7 +131,7 @@ describe("program", () => {
 
     // 3. Initialize bonding curve
     await program.methods
-      .initialize(new anchor.BN(1), new anchor.BN(10)) // k=1, base=10
+      .initialize(new BN(1), new BN(10)) // k=1, base=10
       .accounts({
         user: user.publicKey,
         mint,
@@ -140,7 +141,7 @@ describe("program", () => {
     // 4. Set mint authority
     await setAuthority(
       provider.connection,
-      user.payer,
+      user.payer as anchor.web3.Signer,
       mint,
       user.publicKey,
       AuthorityType.MintTokens,
@@ -150,14 +151,14 @@ describe("program", () => {
     // 5. Create user ata
     const userTokenAccount = await getOrCreateAssociatedTokenAccount(
       provider.connection,
-      user.payer,
+      user.payer as anchor.web3.Signer,
       mint,
       user.publicKey
     );
 
     // 6. Calling buy instruction
-    const solAmount = new anchor.BN(100); // lamports
-    const minTokensOut = new anchor.BN(1);
+    const solAmount = new BN(100); // lamports
+    const minTokensOut = new BN(1);
 
     await program.methods
       .buy(solAmount, minTokensOut)
@@ -205,7 +206,7 @@ describe("program", () => {
   // 1. Create mint (0 decimals)
   const mint = await createMint(
     provider.connection,
-    user.payer,
+    user.payer as anchor.web3.Signer,
     user.publicKey,
     null,
     0
@@ -219,7 +220,7 @@ describe("program", () => {
 
   // 3. Initialize
   await program.methods
-    .initialize(new anchor.BN(1), new anchor.BN(10))
+    .initialize(new BN(1), new BN(10))
     .accounts({
       user: user.publicKey,
       mint,
@@ -230,7 +231,7 @@ describe("program", () => {
 
   await setAuthority(
     provider.connection,
-    user.payer,
+    user.payer as anchor.web3.Signer,
     mint,
     user.publicKey,
     AuthorityType.MintTokens,
@@ -240,14 +241,14 @@ describe("program", () => {
   // 5. Create ATA
   const userTokenAccount = await getOrCreateAssociatedTokenAccount(
     provider.connection,
-    user.payer,
+    user.payer as anchor.web3.Signer,
     mint,
     user.publicKey
   );
 
   // 6. BUY first (setup state)
   await program.methods
-    .buy(new anchor.BN(100), new anchor.BN(1))
+    .buy(new BN(100), new BN(1))
     .accounts({
       user: user.publicKey,
       mint: mint,
@@ -273,7 +274,7 @@ console.log("Reserve:", Curve.reserve.toString());
   // reserve = 100
   
   // 7. SELL
-  const sellAmount = new anchor.BN(5);
+  const sellAmount = new BN(5);
 
   await program.methods
     .sell(sellAmount)

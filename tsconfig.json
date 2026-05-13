@@ -2,6 +2,7 @@
   "compilerOptions": {
     "types": ["mocha", "node"],
     "moduleResolution": "node",
+    "ignoreDeprecations": "6.0",
     "esModuleInterop": true,
     "skipLibCheck": true
   },
