@@ -3,27 +3,30 @@
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "type": "commonjs",
   "scripts": {
-    "dev": "ts-node-dev src/index.ts",
+    "dev": "ts-node src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js"
   },
   "dependencies": {
+    "@coral-xyz/anchor": "^0.32.1",
     "@prisma/adapter-pg": "^7.7.0",
     "@prisma/client": "^7.7.0",
     "@project-serum/anchor": "^0.26.0",
     "@solana/web3.js": "^1.98.4",
     "bullmq": "^5.71.0",
     "db": "workspace:*",
-    "dotenv": "^17.4.1",
+    "dotenv": "^17.4.2",
     "ioredis": "^5.10.1",
     "pg": "^8.20.0"
   },
   "devDependencies": {
-    "@types/node": "^25.5.0",
+    "@types/dotenv": "^8.2.3",
+    "@types/node": "^25.8.0",
     "@types/pg": "^8.20.0",
     "prisma": "^7.7.0",
-    "ts-node-dev": "^2.0.0",
+    "ts-node": "^10.9.2",
     "typescript": "^5.9.3"
   }
 }
