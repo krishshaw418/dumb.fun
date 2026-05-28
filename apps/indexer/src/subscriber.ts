@@ -1,6 +1,7 @@
 import { connection } from "./connProvider";
 import { PublicKey } from "@solana/web3.js";
 import { parser } from "./program";
+import { prisma } from "db";
 
 export class Subscriber {
   pubKey: PublicKey;

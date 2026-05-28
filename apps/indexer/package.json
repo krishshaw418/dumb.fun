@@ -15,6 +15,7 @@
     "@prisma/client": "^7.7.0",
     "@project-serum/anchor": "^0.26.0",
     "@solana/web3.js": "^1.98.4",
+    "@triton-one/yellowstone-grpc": "^5.0.8",
     "bullmq": "^5.71.0",
     "db": "workspace:*",
     "dotenv": "^17.4.2",
