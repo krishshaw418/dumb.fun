@@ -1,52 +1,66 @@
 import "dotenv/config";
-// import { PublicKey } from "@solana/web3.js";
-// import { Subscriber } from "./subscriber";
-// import { program } from "./program";
-import Client, { SubscribeRequest, CommitmentLevel } from "@triton-one/yellowstone-grpc";
+import { PublicKey } from "@solana/web3.js";
+import { program } from "./program";
+import Client, {
+  SubscribeRequest,
+  CommitmentLevel,
+} from "@triton-one/yellowstone-grpc";
+import bs58 from "bs58";
 
 async function main() {
-  // const programId = new PublicKey(program.programId);
-
-  const client = new Client("http://localhost:10000", "", {});
-
+  const programId = new PublicKey(program.programId);
+  const client = new Client("http://127.0.0.1:10000", "", {});
   await client.connect();
+  console.log("Connected to local validator!");
 
   const stream = await client.subscribe();
 
-  stream.on("error", (err) => {
-    throw err;
-  });
-  
   stream.on("data", (data) => {
-    console.log(data);
+    // console.log("data:", data);
+    if (data.transaction) {
+      const sigBuf: Buffer = data.transaction.transaction.signature;
+      if (sigBuf) {
+        const sigBase58 = bs58.encode(sigBuf);
+        console.log("Txn sig: ", sigBase58);
+      } else {
+        console.log("data:", data);
+      }
+    }
   });
 
   const request: SubscribeRequest = {
     slots: {},
     accounts: {},
-    transactionsStatus: {},
     transactions: {
-      client: {
-        accountInclude: ["5Xa2CjDwCgoY9vTWShUxAb7AyCgdKUa8xXaFuv25QFex"],
+      dumbfun: {
+        vote: false,
+        failed: false,
+        accountInclude: [programId.toBase58()],
         accountExclude: [],
-        accountRequired: []
-      }
+        accountRequired: [],
+      },
     },
+    transactionsStatus: {},
     blocks: {},
     blocksMeta: {},
     entry: {},
     accountsDataSlice: [],
-    commitment: CommitmentLevel.PROCESSED
+    commitment: CommitmentLevel.PROCESSED,
   };
 
   stream.write(request);
 
-  stream.on("end", () => {
-    console.log("Stream ended!")
+  stream.on("error", (err) => {
+    console.log(err);
   });
+
+  stream.on("close", () => {
+    console.log("Connection closed!");
+  })
+
 }
 
 main().catch((error) => {
-  console.error(error);
+  console.error("Error: ", error);
   process.exit(1);
 });
