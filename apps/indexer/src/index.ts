@@ -5,7 +5,7 @@ import Client, {
   SubscribeRequest,
   CommitmentLevel,
 } from "@triton-one/yellowstone-grpc";
-import bs58 from "bs58";
+import { decodeInstructionData, decodeInstructionMeta } from "./utils";
 
 async function main() {
   const programId = new PublicKey(program.programId);
@@ -16,15 +16,10 @@ async function main() {
   const stream = await client.subscribe();
 
   stream.on("data", (data) => {
-    // console.log("data:", data);
+    console.log(data);
     if (data.transaction) {
-      const sigBuf: Buffer = data.transaction.transaction.signature;
-      if (sigBuf) {
-        const sigBase58 = bs58.encode(sigBuf);
-        console.log("Txn sig: ", sigBase58);
-      } else {
-        console.log("data:", data);
-      }
+      // decodeInstructionData(data);
+      decodeInstructionMeta(data);
     }
   });
 
@@ -56,8 +51,7 @@ async function main() {
 
   stream.on("close", () => {
     console.log("Connection closed!");
-  })
-
+  });
 }
 
 main().catch((error) => {
