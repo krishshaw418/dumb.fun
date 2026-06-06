@@ -1,9 +1,24 @@
-export type TradeType = "buy" | "sell";
+export enum Direction {
+  BUY = "buy",
+  SELL = "sell"
+};
 
-export interface Trade {
+export interface TradeEvent {
   mint: string;
-  type: TradeType;
-  price: number;
+  user: string;
   solAmount: number;
   tokenAmount: number;
+  newSupply: number;
+  newReserve: number;
+  direction: Direction;
+  price: number;
+  timestamp: Date;
+}
+
+export interface TokenCreatedEvent {
+  mint: string,
+  creator: string,
+  k: number,
+  basePrice: number,
+  timestamp: Date
 }

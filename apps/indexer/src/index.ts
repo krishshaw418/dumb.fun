@@ -1,4 +1,4 @@
-import "dotenv/config";
+import { config } from "./config";
 import { PublicKey } from "@solana/web3.js";
 import { program } from "./program";
 import Client, {
@@ -9,14 +9,14 @@ import { decodeInstructionData, decodeInstructionMeta } from "./utils";
 
 async function main() {
   const programId = new PublicKey(program.programId);
-  const client = new Client("http://127.0.0.1:10000", "", {});
+  const client = new Client(config.grpcUrl, "", {});
   await client.connect();
   console.log("Connected to local validator!");
 
   const stream = await client.subscribe();
 
   stream.on("data", (data) => {
-    console.log(data);
+    // console.log(data);
     if (data.transaction) {
       // decodeInstructionData(data);
       decodeInstructionMeta(data);

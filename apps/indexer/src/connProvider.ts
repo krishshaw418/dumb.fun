@@ -1,9 +1,5 @@
 import { Connection } from "@solana/web3.js";
-import "dotenv/config";
-
-if (!process.env.ANCHOR_PROVIDER_URL) {
-  throw new Error("Failed to load env variables!");
-}
+import { config } from "./config";
 
 class ConnectionManager {
   private static conn: Connection;
@@ -13,7 +9,7 @@ class ConnectionManager {
   static getConnectionInstance(): Connection {
     if (!ConnectionManager.conn) {
       ConnectionManager.conn = new Connection(
-        process.env.ANCHOR_PROVIDER_URL!,
+        config.rpcUrl,
         "finalized",
       );
       console.log("Devnet connection established!");
