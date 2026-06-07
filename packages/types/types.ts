@@ -3,7 +3,7 @@ export enum Direction {
   SELL = "sell"
 };
 
-export interface TradeEvent {
+export interface TradeEventData {
   mint: string;
   user: string;
   solAmount: number;
@@ -15,7 +15,7 @@ export interface TradeEvent {
   timestamp: Date;
 }
 
-export interface TokenCreatedEvent {
+export interface TokenCreatedEventData {
   mint: string,
   creator: string,
   k: number,

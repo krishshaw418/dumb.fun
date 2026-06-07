@@ -4,7 +4,7 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client"
+  provider = "prisma-client-js"
   output   = "../generated/prisma"
 }
 
@@ -42,6 +42,7 @@ model BondingCurveState {
   supply BigInt @default(0) // current supply of the token
   reserve BigInt @default(0) // current reserve of SOL
   is_migrated Boolean @default(false) // migration status of the token
+  timestamp DateTime // timestamp of bonding curve initialization
   updatedAt DateTime @updatedAt // timestamp of bonding curve state change
 
   token Token @relation(fields: [mint], references: [mint]) // reference to the token for which this bonding curve is initialized
