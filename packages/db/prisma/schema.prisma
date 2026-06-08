@@ -16,17 +16,11 @@ model Token {
   mint String @id // public address of the token mint as unique identifier
   creator String // mint authority
   createdAt DateTime // timestamp of the token creation
-  tokenMetadata TokenMetaData? // token metadata
-  bondingCurve BondingCurveState? // initialized bonding curve of the token
-  trades Trade[] // array of tades on the token
-}
-
-model TokenMetaData {
-  mint String @id // public address of the token mint
   name String // name of the token
   symbol String // symbol of the token
   url String // metaplex url to the metadata of the token
-  token Token @relation(fields: [mint], references: [mint])
+  bondingCurve BondingCurveState? // initialized bonding curve of the token
+  trades Trade[] // array of tades on the token
 }
 
 model Trade {

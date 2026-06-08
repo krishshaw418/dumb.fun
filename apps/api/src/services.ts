@@ -1,21 +1,11 @@
 import { prisma } from "db";
-import { TokenMetaData } from "types";
+import { Token } from "types";
 
-export const createNewToken = async (data: TokenMetaData) => {
+export const createNewToken = async (data: Token) => {
     try {
         const newTokenMetaData = data;
-        const newToken = await prisma.token.findUnique({
-            where: {
-                mint: newTokenMetaData.mint,
-                creator: newTokenMetaData.creator
-            }
-        });
 
-        if (!newToken) {
-            throw new Error("can't create new token metadata record because new token not found!");
-        }
-
-        await prisma.tokenMetaData.create({
+        await prisma.token.create({
             data: newTokenMetaData
         });
 

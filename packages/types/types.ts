@@ -23,9 +23,10 @@ export interface TokenCreatedEventData {
   timestamp: Date
 }
 
-export interface TokenMetaData {
+export interface Token {
   mint: string;
   creator: string;
+  createdAt: Date;
   name: string;
   symbol: string;
   url: string;

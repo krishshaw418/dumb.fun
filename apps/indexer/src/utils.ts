@@ -77,22 +77,12 @@ export const processAndSaveData = async (data: {
       console.log("Token created: ", dataStructure);
       try {
         // update db
-        await prisma.$transaction(async (tx) => {
-          await tx.token.create({
-            data: {
-              mint: (dataStructure as TokenCreatedEventData).mint,
-              creator: (dataStructure as TokenCreatedEventData).creator,
-              createdAt: (dataStructure as TokenCreatedEventData).timestamp
-            }
-          });
-
-          await tx.bondingCurveState.create({
-            data: {
-              mint: (dataStructure as TokenCreatedEventData).mint,
-              creator: (dataStructure as TokenCreatedEventData).creator,
-              timestamp: (dataStructure as TokenCreatedEventData).timestamp
-            }
-          });
+        await prisma.bondingCurveState.create({
+          data: {
+            mint: (dataStructure as TokenCreatedEventData).mint,
+            creator: (dataStructure as TokenCreatedEventData).creator,
+            timestamp: (dataStructure as TokenCreatedEventData).timestamp
+          }
         });
       } catch (error) {
         console.error(error);

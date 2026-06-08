@@ -13,7 +13,10 @@ router.post("/new-token", async (req: Request, res: Response) => {
     }
 
     try {
-        await createNewToken(parsed.data);
+        await createNewToken({
+            ...parsed.data,
+            createdAt: new Date(parsed.data.createdAt)
+        });
 
         res.status(201).json({ success: true, message: "Created new token!" });
     } catch (error) {
