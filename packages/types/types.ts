@@ -22,3 +22,11 @@ export interface TokenCreatedEventData {
   basePrice: number,
   timestamp: Date
 }
+
+export interface TokenMetaData {
+  mint: string;
+  creator: string;
+  name: string;
+  symbol: string;
+  url: string;
+}
