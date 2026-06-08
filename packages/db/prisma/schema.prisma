@@ -18,7 +18,7 @@ model Token {
   name String? // name of the token
   symbol String? // symbol of the token
   url String? // metaplex url to the metadata of the token
-  createdAt DateTime @default(now()) // timestamp of the token creation
+  createdAt DateTime // timestamp of the token creation
 
   bondingCurve BondingCurveState? // initialized bonding curve of the token
   trades Trade[] // array of tades on the token

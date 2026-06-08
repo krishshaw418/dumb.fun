@@ -10,6 +10,7 @@ import { prisma } from "db";
 const coder = new BorshInstructionCoder(idl as Idl);
 const eventCoder = new BorshCoder(idl as Idl);
 
+// filter instruction data
 export const decodeInstructionData = (data: any) => {
   const instructionsDataBuf: Uint8Array<ArrayBufferLike> =
     data.transaction.transaction.transaction.message.instructions[0].data;
@@ -21,7 +22,7 @@ export const decodeInstructionData = (data: any) => {
   }
 };
 
-// Filter data
+// Filter events
 export const decodeInstructionMeta = (data: any) => {
   const programLogs = data.transaction.transaction.meta.logMessages;
   if (!programLogs) {
@@ -73,15 +74,25 @@ export const processAndSaveData = async (data: {
         timestamp: new Date(data.eventData.timestamp * 1000),
       };
 
-      console.log(dataStructure);
+      console.log("Token created: ", dataStructure);
       try {
         // update db
-        await prisma.bondingCurveState.create({
-          data: {
-            mint: dataStructure.mint,
-            creator: dataStructure.creator,
-            timestamp: dataStructure.timestamp,
-          },
+        await prisma.$transaction(async (tx) => {
+          await tx.token.create({
+            data: {
+              mint: (dataStructure as TokenCreatedEventData).mint,
+              creator: (dataStructure as TokenCreatedEventData).creator,
+              createdAt: (dataStructure as TokenCreatedEventData).timestamp
+            }
+          });
+
+          await tx.bondingCurveState.create({
+            data: {
+              mint: (dataStructure as TokenCreatedEventData).mint,
+              creator: (dataStructure as TokenCreatedEventData).creator,
+              timestamp: (dataStructure as TokenCreatedEventData).timestamp
+            }
+          });
         });
       } catch (error) {
         console.error(error);
@@ -106,7 +117,7 @@ export const processAndSaveData = async (data: {
       console.log("Trade: ", dataStructure);
       try {
         // update db
-        prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx) => {
           // create new trade
           await tx.trade.create({
             data: {
@@ -152,7 +163,7 @@ export const processAndSaveData = async (data: {
       console.log("Trade: ", dataStructure);
       try {
         // update db
-        prisma.$transaction(async (tx) => {
+        await prisma.$transaction(async (tx) => {
           // create new trade
           await tx.trade.create({
             data: {
