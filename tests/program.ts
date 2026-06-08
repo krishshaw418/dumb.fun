@@ -28,53 +28,59 @@ describe("program", () => {
   it("Initialize bonding curve", async () => {
 
     // 1. Creating a dummy mint
-    const mint = Keypair.generate();
-    
-    // 2. Airdroping some SOL to sign transaction
-    const sig = await provider.connection.requestAirdrop(
+    const mint = await createMint(
+      provider.connection,
+      user.payer as anchor.web3.Signer,
       user.publicKey,
-      2 * anchor.web3.LAMPORTS_PER_SOL
+      null,
+      6
     );
 
-    const latestBlockHash = await provider.connection.getLatestBlockhash();
-    await provider.connection.confirmTransaction({
-      blockhash: latestBlockHash.blockhash,
-      lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-      signature: sig
-    }, 'confirmed');
+    // 4. update db
+    const createdAt = Date.now();
+    try {
+      const response = await fetch("http://localhost:8080/api/new-token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          mint: mint.toString(),
+          creator: user.publicKey.toString(),
+          name: "test-coin",
+          symbol: "tstc",
+          url: "https://api.s3.us-east.amazonaws.com",
+          createdAt: new Date(createdAt)
+        })
+      });
 
-    // 3. Create mint account (just a system account is fine for seed usage)
-    const lamports = await provider.connection.getMinimumBalanceForRentExemption(0);
-    
-    const createMintTx = new anchor.web3.Transaction().add(
-      SystemProgram.createAccount({
-        fromPubkey: user.publicKey,
-        newAccountPubkey: mint.publicKey,
-        space: 0,
-        lamports,
-        programId: SystemProgram.programId,
-      })
-    );
-    await provider.sendAndConfirm(createMintTx, [mint]);
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log(data.message);
+    } catch (error: any) {
+      assert.fail(error);
+    }
 
-    // 4. Derive the pda
+    // 5. Derive the pda
     const [bondingCurvePda] = anchor.web3.PublicKey.findProgramAddressSync(
-      [Buffer.from("bonding_curve"), mint.publicKey.toBuffer()],
+      [Buffer.from("bonding_curve"), mint.toBuffer()],
       program.programId
     )
 
-    // 5. Call initialize
+    // 6. Call initialize
     const k = new BN(2);
     const base_price = new BN(10);
     await program.methods
       .initialize(k, base_price)
       .accounts({
         user: user.publicKey,
-        mint: mint.publicKey,
+        mint,
       })
       .rpc();
     
-    // 6. Fetch and assert state
+    // 7. Fetch and assert state
     const account = await program.account.bondingCurve.fetch(
       bondingCurvePda
     );
@@ -82,7 +88,7 @@ describe("program", () => {
     console.log("Bonding Curve:", account);
 
     // Assertions
-    if (!account.mint.equals(mint.publicKey)) {
+    if (!account.mint.equals(mint)) {
       throw new Error("Mint mismatch");
     }
 
@@ -121,15 +127,42 @@ describe("program", () => {
       user.publicKey,
       null,
       6
-    )
+    );
 
-    // 2. Derive PDA
+    // 2. update db
+    const createdAt = Date.now();
+    try {
+      const response = await fetch("http://localhost:8080/api/new-token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          mint: mint.toString(),
+          creator: user.publicKey.toString(),
+          name: "test-coin",
+          symbol: "tstc",
+          url: "https://api.s3.us-east.amazonaws.com",
+          createdAt: new Date(createdAt)
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log(data.message);
+    } catch (error: any) {
+      assert.fail(error);
+    }
+
+    // 3. Derive PDA
     const [bondingCurvePda] = PublicKey.findProgramAddressSync(
       [Buffer.from("bonding_curve"), mint.toBuffer()],
       program.programId
     );
 
-    // 3. Initialize bonding curve
+    // 4. Initialize bonding curve
     await program.methods
       .initialize(new BN(1), new BN(10)) // k=1, base=10
       .accounts({
@@ -138,7 +171,7 @@ describe("program", () => {
       })
       .rpc()
     
-    // 4. Set mint authority
+    // 5. Set mint authority
     await setAuthority(
       provider.connection,
       user.payer as anchor.web3.Signer,
@@ -148,7 +181,7 @@ describe("program", () => {
       bondingCurvePda
     );
 
-    // 5. Create user ata
+    // 6. Create user ata
     const userTokenAccount = await getOrCreateAssociatedTokenAccount(
       provider.connection,
       user.payer as anchor.web3.Signer,
@@ -156,7 +189,7 @@ describe("program", () => {
       user.publicKey
     );
 
-    // 6. Calling buy instruction
+    // 7. Calling buy instruction
     const solAmount = new BN(100); // lamports
     const minTokensOut = new BN(1);
 
@@ -170,11 +203,11 @@ describe("program", () => {
       })
       .rpc();
 
-    // 7. Fetch state
+    // 8. Fetch state
     const curve = await program.account.bondingCurve.fetch(bondingCurvePda);
 
 
-    // 8. Assertions
+    // 9. Assertions
     // Price = base + k*supply = 10 + 1*0 = 10
     // tokens_out = 100 / 10 = 10
 
@@ -182,7 +215,7 @@ describe("program", () => {
     assert.equal(curve.reserve.toNumber(), 100);
 
 
-    // 9. Check user's balance
+    // 10. Check user's balance
     const balance = await provider.connection.getTokenAccountBalance(
       userTokenAccount.address
     );
@@ -197,114 +230,143 @@ describe("program", () => {
   });
 
   it("Sell tokens", async () => {
-  const provider = anchor.AnchorProvider.env();
-  anchor.setProvider(provider);
+    const provider = anchor.AnchorProvider.env();
+    anchor.setProvider(provider);
 
-  const program = anchor.workspace.Dumbfun as Program<Dumbfun>;
-  const user = provider.wallet;
+    const program = anchor.workspace.Dumbfun as Program<Dumbfun>;
+    const user = provider.wallet;
 
-  // 1. Create mint (0 decimals)
-  const mint = await createMint(
-    provider.connection,
-    user.payer as anchor.web3.Signer,
-    user.publicKey,
-    null,
-    0
-  );
+    // 1. Create mint (0 decimals)
+    const mint = await createMint(
+      provider.connection,
+      user.payer as anchor.web3.Signer,
+      user.publicKey,
+      null,
+      0
+    );
 
-  // 2. Derive PDA
-  const [bondingCurvePda] = PublicKey.findProgramAddressSync(
-    [Buffer.from("bonding_curve"), mint.toBuffer()],
-    program.programId
-  );
+    console.log("mint created: ", mint.toString());
+    console.log("creator of mint: ", user.publicKey.toString());
+    
+    // 2. update db
+    const createdAt = Date.now();
+    try {
+      const response = await fetch("http://localhost:8080/api/new-token", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          mint: mint.toString(),
+          creator: user.publicKey.toString(),
+          name: "test-coin",
+          symbol: "tstc",
+          url: "https://api.s3.us-east.amazonaws.com",
+          createdAt: new Date(createdAt)
+        })
+      });
 
-  // 3. Initialize
-  await program.methods
-    .initialize(new BN(1), new BN(10))
-    .accounts({
-      user: user.publicKey,
+      if (!response.ok) {
+        throw new Error(`HTTP error! Status: ${response.status}`);
+      }
+      const data = await response.json();
+      console.log(data.message);
+    } catch (error: any) {
+      assert.fail(error);
+    }
+
+    // 3. Derive PDA
+    const [bondingCurvePda] = PublicKey.findProgramAddressSync(
+      [Buffer.from("bonding_curve"), mint.toBuffer()],
+      program.programId
+    );
+
+    // 4. Initialize
+    await program.methods
+      .initialize(new BN(1), new BN(10))
+      .accounts({
+        user: user.publicKey,
+        mint,
+      })
+      .rpc();
+
+    // 5. Set mint authority → PDA
+    await setAuthority(
+      provider.connection,
+      user.payer as anchor.web3.Signer,
       mint,
-    })
-    .rpc();
+      user.publicKey,
+      AuthorityType.MintTokens,
+      bondingCurvePda
+    );
 
-  // 4. Set mint authority → PDA
+    // 6. Create ATA
+    const userTokenAccount = await getOrCreateAssociatedTokenAccount(
+      provider.connection,
+      user.payer as anchor.web3.Signer,
+      mint,
+      user.publicKey
+    );
 
-  await setAuthority(
-    provider.connection,
-    user.payer as anchor.web3.Signer,
-    mint,
-    user.publicKey,
-    AuthorityType.MintTokens,
-    bondingCurvePda
-  );
+    // 7. BUY first (setup state)
+    await program.methods
+      .buy(new BN(100), new BN(1))
+      .accounts({
+        user: user.publicKey,
+        mint: mint,
+        userTokenAccount: userTokenAccount.address,
+        mintAccount: mint
+      })
+      .rpc();
 
-  // 5. Create ATA
-  const userTokenAccount = await getOrCreateAssociatedTokenAccount(
-    provider.connection,
-    user.payer as anchor.web3.Signer,
-    mint,
-    user.publicKey
-  );
+      console.log("User ATA:", userTokenAccount.address.toBase58());
 
-  // 6. BUY first (setup state)
-  await program.methods
-    .buy(new BN(100), new BN(1))
-    .accounts({
-      user: user.publicKey,
-      mint: mint,
-      userTokenAccount: userTokenAccount.address,
-      mintAccount: mint
-    })
-    .rpc();
+    const balance = await provider.connection.getTokenAccountBalance(
+      userTokenAccount.address
+    );
+    console.log("Token balance of user after buy:", balance.value.amount);
 
-    console.log("User ATA:", userTokenAccount.address.toBase58());
+    const Curve = await program.account.bondingCurve.fetch(bondingCurvePda);
+    console.log("Reserve balance after minting tokens to user:", Curve.reserve.toString());
 
-const balance = await provider.connection.getTokenAccountBalance(
-  userTokenAccount.address
-);
-console.log("Token balance:", balance.value.amount);
+    // After buy:
+    // price = 10
+    // tokens_out = 100 / 10 = 10
+    // supply = 10
+    // reserve = 100
+    
+    // 8. SELL
+    const sellAmount = new BN(5);
 
-const Curve = await program.account.bondingCurve.fetch(bondingCurvePda);
-console.log("Reserve:", Curve.reserve.toString());
+    await program.methods
+      .sell(sellAmount)
+      .accounts({
+        user: user.publicKey,
+        mint: mint,
+        userTokenAccount: userTokenAccount.address,
+        mintAccount: mint,
+      })
+      .rpc();
 
-  // After buy:
-  // price = 10
-  // tokens_out = 100 / 10 = 10
-  // supply = 10
-  // reserve = 100
-  
-  // 7. SELL
-  const sellAmount = new BN(5);
+    // 9. Fetch state
+    const curve = await program.account.bondingCurve.fetch(bondingCurvePda);
 
-  await program.methods
-    .sell(sellAmount)
-    .accounts({
-      user: user.publicKey,
-      mint: mint,
-      userTokenAccount: userTokenAccount.address,
-      mintAccount: mint,
-    })
-    .rpc();
+    // 10. Assertions
 
-  // 8. Fetch state
-  const curve = await program.account.bondingCurve.fetch(bondingCurvePda);
+    // After sell:
+    assert.equal(curve.supply.toNumber(), 5);
+    assert.equal(curve.reserve.toNumber(), 25);
 
-  // 9. Assertions
+    // 11. Check token balance
+    const tokenBalance = await provider.connection.getTokenAccountBalance(
+      userTokenAccount.address
+    );
 
-  // After sell:
-  assert.equal(curve.supply.toNumber(), 5);
-  assert.equal(curve.reserve.toNumber(), 25);
+    assert.equal(Number(tokenBalance.value.amount), 5);
 
-  // 10. Check token balance
-  const tokenBalance = await provider.connection.getTokenAccountBalance(
-    userTokenAccount.address
-  );
-
-  assert.equal(Number(tokenBalance.value.amount), 5);
-
-  console.log("Sell successful:", {
-    supply: curve.supply.toNumber(),
-    reserve: curve.reserve.toNumber(),
+    console.log("Sell successful:", {
+      supply: curve.supply.toNumber(),
+      reserve: curve.reserve.toNumber(),
+    });
   });
-});
 });

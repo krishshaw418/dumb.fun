@@ -77,6 +77,17 @@ export const processAndSaveData = async (data: {
       console.log("Token created: ", dataStructure);
       try {
         // update db
+        const newToken = await prisma.token.findUnique({
+          where: {
+            mint: dataStructure.mint,
+            creator: dataStructure.creator
+          }
+        });
+
+        if (!newToken) {
+          throw new Error("New token not found, failed to initialize bonding curve!")
+        }
+
         await prisma.bondingCurveState.create({
           data: {
             mint: (dataStructure as TokenCreatedEventData).mint,
