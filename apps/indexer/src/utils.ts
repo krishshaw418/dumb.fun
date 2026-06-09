@@ -29,12 +29,17 @@ export const decodeInstructionData = (data: any) => {
 
 // Filter events
 export const decodeInstructionMeta = (data: any) => {
-  let programLogs = data.transaction?.transaction?.meta.logMessages;
-  let latestTxn = {
-    sig: bs58.encode(Buffer.from(data.transaction?.transaction?.signature)),
-    slot: BigInt(data.transaction?.slot)
-  };
-  if (!programLogs) {
+  let programLogs;
+  let latestTxn;
+  if (data.transaction.transaction) {
+    programLogs = data.transaction?.transaction?.meta.logMessages;
+    latestTxn = {
+      sig: bs58.encode(Buffer.from(data.transaction?.transaction?.signature)),
+      slot: BigInt(data.transaction?.slot)
+    };
+  }
+  
+  if (!programLogs || !latestTxn) {
     programLogs = data.meta.logMessages;
     latestTxn = {
       sig: data.transaction.signatures[0],

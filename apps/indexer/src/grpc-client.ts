@@ -1,10 +1,10 @@
 import Client from "@triton-one/yellowstone-grpc";
 import { config } from "./config";
 
-class getClientInstance {
+class GetClientInstance {
     private static instance: Client;
 
-    static getInstance() {
+    static getInstance(): Client {
         if (!this.instance) {
             this.instance = new Client(config.grpcUrl, "", {});
         }
@@ -12,4 +12,4 @@ class getClientInstance {
     }
 }
 
-export const client = getClientInstance.getInstance();
+export const client = GetClientInstance.getInstance();
