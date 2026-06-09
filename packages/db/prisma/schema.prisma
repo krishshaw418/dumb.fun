@@ -13,36 +13,36 @@ datasource db {
 }
 
 model Token {
-  mint String @id // public address of the token mint as unique identifier
-  creator String // mint authority
-  createdAt DateTime // timestamp of the token creation
-  name String // name of the token
-  symbol String // symbol of the token
-  url String // metaplex url to the metadata of the token
+  mint         String             @id // public address of the token mint as unique identifier
+  creator      String // mint authority
+  createdAt    DateTime // timestamp of the token creation
+  name         String // name of the token
+  symbol       String // symbol of the token
+  url          String // metaplex url to the metadata of the token
   bondingCurve BondingCurveState? // initialized bonding curve of the token
-  trades Trade[] // array of tades on the token
+  trades       Trade[] // array of tades on the token
 }
 
 model Trade {
-  id String @id @default(uuid())
-  mint String // mint address of the token traded
-  direction Direction // buy or sell
-  user String // public address of the user who made the trade
-  solAmount BigInt // SOL deposit or withdraw
+  id          String    @id @default(uuid())
+  mint        String // mint address of the token traded
+  direction   Direction // buy or sell
+  user        String // public address of the user who made the trade
+  solAmount   BigInt // SOL deposit or withdraw
   tokenAmount BigInt // token deposit or withdraw
-  timeStamp DateTime // timpestamp of the trade
+  timeStamp   DateTime // timpestamp of the trade
 
   token Token @relation(fields: [mint], references: [mint]) // reference to the traded token row
 }
 
 model BondingCurveState {
-  mint String @id // public address of the token for which this bonding curve is initialized
-  creator String // mint authority
-  supply BigInt @default(0) // current supply of the token
-  reserve BigInt @default(0) // current reserve of SOL
-  is_migrated Boolean @default(false) // migration status of the token
-  timestamp DateTime // timestamp of bonding curve initialization
-  updatedAt DateTime @updatedAt // timestamp of bonding curve state change
+  mint        String   @id // public address of the token for which this bonding curve is initialized
+  creator     String // mint authority
+  supply      BigInt   @default(0) // current supply of the token
+  reserve     BigInt   @default(0) // current reserve of SOL
+  is_migrated Boolean  @default(false) // migration status of the token
+  timestamp   DateTime // timestamp of bonding curve initialization
+  updatedAt   DateTime @updatedAt // timestamp of bonding curve state change
 
   token Token @relation(fields: [mint], references: [mint]) // reference to the token for which this bonding curve is initialized
 }
@@ -51,4 +51,11 @@ model BondingCurveState {
 enum Direction {
   buy
   sell
+}
+
+model LatestTxn {
+  id        String   @id
+  sig       String
+  slot      BigInt
+  updatedAt DateTime @updatedAt @default(now())
 }

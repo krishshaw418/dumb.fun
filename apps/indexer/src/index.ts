@@ -1,22 +1,24 @@
-import { config } from "./config";
 import { PublicKey } from "@solana/web3.js";
 import { program } from "./program";
-import Client, {
+import { client } from "./grpc-client";
+import {
   SubscribeRequest,
   CommitmentLevel,
 } from "@triton-one/yellowstone-grpc";
-import { decodeInstructionData, decodeInstructionMeta } from "./utils";
+import { decodeInstructionData, decodeInstructionMeta, backfillData } from "./utils";
 
 async function main() {
   const programId = new PublicKey(program.programId);
-  const client = new Client(config.grpcUrl, "", {});
   await client.connect();
   console.log("Connected to local validator!");
+
+  // backfill missed data
+  await backfillData();
 
   const stream = await client.subscribe();
 
   stream.on("data", (data) => {
-    // console.log(data);
+    console.log(data);
     if (data.transaction) {
       // decodeInstructionData(data);
       decodeInstructionMeta(data);
@@ -40,13 +42,13 @@ async function main() {
     blocksMeta: {},
     entry: {},
     accountsDataSlice: [],
-    commitment: CommitmentLevel.PROCESSED,
+    commitment: CommitmentLevel.FINALIZED,
   };
 
   stream.write(request);
 
   stream.on("error", (err) => {
-    console.log(err);
+    console.error(err);
   });
 
   stream.on("close", () => {

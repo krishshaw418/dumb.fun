@@ -6,6 +6,11 @@ import {
   Direction,
 } from "../../../packages/types/types";
 import { prisma } from "db";
+import { connection } from "./connProvider";
+import { program } from "./program";
+import { PublicKey } from "@solana/web3.js";
+import bs58 from "bs58";
+
 
 const coder = new BorshInstructionCoder(idl as Idl);
 const eventCoder = new BorshCoder(idl as Idl);
@@ -24,7 +29,21 @@ export const decodeInstructionData = (data: any) => {
 
 // Filter events
 export const decodeInstructionMeta = (data: any) => {
-  const programLogs = data.transaction.transaction.meta.logMessages;
+  let programLogs = data.transaction?.transaction?.meta.logMessages;
+  let latestTxn = {
+    sig: bs58.encode(Buffer.from(data.transaction?.transaction?.signature)),
+    slot: BigInt(data.transaction?.slot)
+  };
+  if (!programLogs) {
+    programLogs = data.meta.logMessages;
+    latestTxn = {
+      sig: data.transaction.signatures[0],
+      slot: data.slot
+    };
+  }
+
+  console.log("From decodeInstructionMeta:", latestTxn);
+
   if (!programLogs) {
     console.log("No program logs found!");
     return;
@@ -44,6 +63,7 @@ export const decodeInstructionMeta = (data: any) => {
         processAndSaveData({
           eventName: event.name,
           eventData: event.data,
+          latestTxn: latestTxn
         }).catch((err) => {
           console.error(err);
           return;
@@ -60,6 +80,10 @@ export const decodeInstructionMeta = (data: any) => {
 export const processAndSaveData = async (data: {
   eventName: string;
   eventData: any;
+  latestTxn: {
+    sig: string,
+    slot: bigint
+  };
 }) => {
   let dataStructure: TokenCreatedEventData | TradeEventData;
 
@@ -88,12 +112,34 @@ export const processAndSaveData = async (data: {
           throw new Error("New token not found, failed to initialize bonding curve!")
         }
 
-        await prisma.bondingCurveState.create({
-          data: {
-            mint: (dataStructure as TokenCreatedEventData).mint,
-            creator: (dataStructure as TokenCreatedEventData).creator,
-            timestamp: (dataStructure as TokenCreatedEventData).timestamp
-          }
+        await prisma.$transaction(async (tx) => {
+          // initialize bonding curve state
+          await tx.bondingCurveState.upsert({
+            create: {
+              mint: (dataStructure as TokenCreatedEventData).mint,
+              creator: (dataStructure as TokenCreatedEventData).creator,
+              timestamp: (dataStructure as TokenCreatedEventData).timestamp
+            },
+            update: {
+              mint: (dataStructure as TokenCreatedEventData).mint,
+              creator: (dataStructure as TokenCreatedEventData).creator,
+              timestamp: (dataStructure as TokenCreatedEventData).timestamp
+            },
+            where: {
+              mint: (dataStructure as TokenCreatedEventData).mint
+            }
+          });
+
+          // update latest slot processed
+          await tx.latestTxn.update({
+            where: {
+              id: "dumb-fun-indexer"
+            },
+            data: {
+              sig: data.latestTxn.sig,
+              slot: data.latestTxn.slot
+            }
+          });
         });
       } catch (error) {
         console.error(error);
@@ -141,6 +187,17 @@ export const processAndSaveData = async (data: {
               reserve: (dataStructure as TradeEventData).newReserve,
             },
           });
+
+          // update latest slot processed
+          await tx.latestTxn.update({
+            where: {
+              id: "dumb-fun-indexer"
+            },
+            data: {
+              sig: data.latestTxn.sig,
+              slot: data.latestTxn.slot
+            }
+          });
         });
       } catch (error) {
         console.error(error);
@@ -187,6 +244,17 @@ export const processAndSaveData = async (data: {
               reserve: (dataStructure as TradeEventData).newReserve,
             },
           });
+
+          // update latest slot processed
+          await tx.latestTxn.update({
+            where: {
+              id: "dumb-fun-indexer"
+            },
+            data: {
+              sig: data.latestTxn.sig,
+              slot: data.latestTxn.slot
+            }
+          });
         });
       } catch (error) {
         console.error(error);
@@ -200,3 +268,44 @@ export const processAndSaveData = async (data: {
     }
   }
 };
+
+// filter missed data
+export const backfillData = async () => {
+
+  const programId = new PublicKey(program.programId);
+
+  const latestTxRecord = await prisma.latestTxn.findFirst({
+    where: {
+      id: "dumb-fun-indexer"
+    },
+    select: { sig: true }
+  });
+
+  if (!latestTxRecord) {
+    console.error("Latest txn record not found!");
+    return;
+  }
+
+  let signaturesInfo;
+  if (latestTxRecord.sig.length === 0) {
+    signaturesInfo = await connection.getSignaturesForAddress(programId, {
+      limit: 100,
+    });
+  } else {
+    signaturesInfo = await connection.getSignaturesForAddress(programId, {
+      until: latestTxRecord.sig,
+      limit: 100,
+    });
+  }
+
+  const signatureList = signaturesInfo.map(tx => tx.signature);
+  signatureList.reverse();
+
+  for (let sig of signatureList) {
+    const txDetail = await connection.getParsedTransaction(sig, 'confirmed');
+    console.log("Txn details: \n", txDetail);
+    decodeInstructionMeta(txDetail);
+  }
+
+  return;
+}

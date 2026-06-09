@@ -233,9 +233,6 @@ describe("program", () => {
     const provider = anchor.AnchorProvider.env();
     anchor.setProvider(provider);
 
-    const program = anchor.workspace.Dumbfun as Program<Dumbfun>;
-    const user = provider.wallet;
-
     // 1. Create mint (0 decimals)
     const mint = await createMint(
       provider.connection,
