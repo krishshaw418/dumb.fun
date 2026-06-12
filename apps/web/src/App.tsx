@@ -1,17 +1,18 @@
-import TokenContainer from "./components/token-container";
-import Navbar from "./components/navbar";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Layout from "./Layout";
+import Home from "./pages/Home";
+import Create from "./pages/Create";
 
 function App() {
   return (
-    <>
-      <div className="w-full">
-        <Navbar />
-        <div className="m-5">
-          <h1 className="text-2xl font-bold py-2">Explore Coins</h1>
-          <TokenContainer />
-        </div>
-      </div>
-    </>
+    <BrowserRouter>
+      <Layout>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/create" element={<Create />} />
+        </Routes>
+      </Layout>
+    </BrowserRouter>
   );
 }
 

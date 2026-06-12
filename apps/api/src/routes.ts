@@ -21,7 +21,7 @@ router.post("/new-token", async (req: Request, res: Response) => {
         res.status(201).json({ success: true, message: "Created new token!" });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ success: false, message: "Failed to create new token!" });
+        return res.status(500).json({ success: false, error: "Failed to create new token!" });
     }
 });
 

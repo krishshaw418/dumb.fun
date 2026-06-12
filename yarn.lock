@@ -949,6 +949,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/resolvers@npm:^5.4.0":
+  version: 5.4.0
+  resolution: "@hookform/resolvers@npm:5.4.0"
+  dependencies:
+    "@standard-schema/utils": "npm:^0.3.0"
+  peerDependencies:
+    react-hook-form: ^7.55.0
+  checksum: 10c0/ea312948a8ee4dd711287295c95ddd4cefc69d3e01ecf196477aaf5179fbb28b10801486cb3e909abaea169ee7199ce9e725fcded8a98a539ba07aa278753a42
+  languageName: node
+  linkType: hard
+
 "@humanfs/core@npm:^0.19.1":
   version: 0.19.1
   resolution: "@humanfs/core@npm:0.19.1"
@@ -1197,6 +1208,219 @@ __metadata:
   dependencies:
     "@lit-labs/ssr-dom-shim": "npm:^1.5.0"
   checksum: 10c0/557069ce6ebbbafb1140e1e0a25ce73d3501bf455cda231d42bb131baa9065c54b6b7ca1655507eede397decd7ddde16c84192cb72a07d4edf41d54e07725933
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/mpl-token-metadata@npm:^3.4.0":
+  version: 3.4.0
+  resolution: "@metaplex-foundation/mpl-token-metadata@npm:3.4.0"
+  dependencies:
+    "@metaplex-foundation/mpl-toolbox": "npm:^0.10.0"
+  peerDependencies:
+    "@metaplex-foundation/umi": ">= 0.8.2 <= 1"
+  checksum: 10c0/1c85ea8314ebf4847f5a6fb8c7dff5669a9cccf2d7c1fdf9028707041015db81dba7337f558d56266e4c78c9783edd97e57d619615376b1c76d39851a9ff0639
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/mpl-toolbox@npm:^0.10.0":
+  version: 0.10.0
+  resolution: "@metaplex-foundation/mpl-toolbox@npm:0.10.0"
+  peerDependencies:
+    "@metaplex-foundation/umi": ">= 0.8.2 <= 1"
+  checksum: 10c0/5faf3c31f7eda511bb67c31f41f9627e41d5b1d9b496d561715c8a48a7d035ec084df1685cda5022bfd2d8fd85dfa3bddba14183af1f313166fac25cdce493eb
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-bundle-defaults@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-bundle-defaults@npm:1.5.1"
+  dependencies:
+    "@metaplex-foundation/umi-downloader-http": "npm:^1.5.1"
+    "@metaplex-foundation/umi-eddsa-web3js": "npm:^1.5.1"
+    "@metaplex-foundation/umi-http-fetch": "npm:^1.5.1"
+    "@metaplex-foundation/umi-program-repository": "npm:^1.5.1"
+    "@metaplex-foundation/umi-rpc-chunk-get-accounts": "npm:^1.5.1"
+    "@metaplex-foundation/umi-rpc-web3js": "npm:^1.5.1"
+    "@metaplex-foundation/umi-serializer-data-view": "npm:^1.5.1"
+    "@metaplex-foundation/umi-transaction-factory-web3js": "npm:^1.5.1"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^1.5.1
+    "@solana/web3.js": ^1.72.0
+  checksum: 10c0/0dad368b5c1d01205696fbabb632dbae5c45433d8bd0344f6b7a85b23e2329b018ab9fbd61b29b053455b8733cbb499c03ca6fb23809cf43248d0ed2b127a24a
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-downloader-http@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-downloader-http@npm:1.5.1"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^1.5.1
+  checksum: 10c0/47ca2e2c683b3543baa63ac279426b9c6f1c2106fea215f08794280ae445b64e902fadf6a719d3438e6a3047e9c868225ce578bb5b9567dcfb30e88a703374f5
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-eddsa-web3js@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-eddsa-web3js@npm:1.5.1"
+  dependencies:
+    "@metaplex-foundation/umi-web3js-adapters": "npm:^1.5.1"
+    "@noble/curves": "npm:^1.0.0"
+    yaml: "npm:^2.7.0"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^1.5.1
+    "@solana/web3.js": ^1.72.0
+  checksum: 10c0/7b6567aff60324d061e05052dda5102eb067959d34e4215cd31559d474fcd7d1c646e2735bec6a796940c9d2873df5b897fc453fdf5f4f7de1791576132fadad
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-http-fetch@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-http-fetch@npm:1.5.1"
+  dependencies:
+    node-fetch: "npm:^2.6.7"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^1.5.1
+  checksum: 10c0/77d75918f07791e032ab5a4b6e8a70e34bb742c3c4f15c60800a47e20cf9ca4438ea480cfea4d532f3200aab21bfc95cbfdbca80329de284eb51f4c41c9f9b65
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-options@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-options@npm:1.5.1"
+  checksum: 10c0/59e046847a6f3703f36437274365079222c77a5f352a50e3f2b09e76ec3781c89429cfa3720a8859004e18b973f2400ddef10fcdb37e5ba2a2f819bdd24f7fae
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-program-repository@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-program-repository@npm:1.5.1"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^1.5.1
+  checksum: 10c0/d2338f79c8f56008bab8d5ab5f8e1d92313c5fc8d647f149a0eb40a79de65904fefa5ae7e7b15675d59578497bb43efd2993d3622986f8f5d1446138a63a8798
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-public-keys@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-public-keys@npm:1.5.1"
+  dependencies:
+    "@metaplex-foundation/umi-serializers-encodings": "npm:^1.5.1"
+  checksum: 10c0/d7f2ac902f10ea7c438cbbd6d4120fe82b1aa954d81dd8c6bbee89bb2a50e7bd8a2bdd07b80c7563a8fb81747096b26a5a584434acb33fec06119947a2946eeb
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-rpc-chunk-get-accounts@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-rpc-chunk-get-accounts@npm:1.5.1"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^1.5.1
+  checksum: 10c0/86316cf14d104fd126f3a70dfb74bf82114e5b407b55dc5a086cbe4d8eacf22fe7972a941bf57a8ab85bb9058cba9f45293971a3456fd8d3a7730d44f4064f66
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-rpc-web3js@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-rpc-web3js@npm:1.5.1"
+  dependencies:
+    "@metaplex-foundation/umi-web3js-adapters": "npm:^1.5.1"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^1.5.1
+    "@solana/web3.js": ^1.72.0
+  checksum: 10c0/167ba9ead717ecf35a60237358405af00286daf25ea69092f3eff7998a0faab22ac97ace463123a94731af6a1de8caf3e1e78d1ea3da72257d69f7e9442eb374
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-serializer-data-view@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-serializer-data-view@npm:1.5.1"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^1.5.1
+  checksum: 10c0/4e4a0674578809eaae6efca5686998a867de35a5c2da9fb7b56319e6b4c098007b8a0c312bf5930463568b9a946136f8b35d142af386fcc789a0b3bd0316c4ab
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-serializers-core@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-serializers-core@npm:1.5.1"
+  checksum: 10c0/4efebdf197190d031a7a9315099ed9d821d483c335263876b09574b7d0ef1843d59ce4ed4fd9f7e69d8d508878baa65ac383eca99edb78be676267d73dc34ac0
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-serializers-encodings@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-serializers-encodings@npm:1.5.1"
+  dependencies:
+    "@metaplex-foundation/umi-serializers-core": "npm:^1.5.1"
+  checksum: 10c0/21f59b070004f571de9cef913a5843e036a4550e184f9b0b6a9d8ef933f000550e6be28733cd2f158caa71739f8a11b8479eccb24c5ae1c5b3bb800f47b02011
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-serializers-numbers@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-serializers-numbers@npm:1.5.1"
+  dependencies:
+    "@metaplex-foundation/umi-serializers-core": "npm:^1.5.1"
+  checksum: 10c0/faff9f274d39019d501171bb313488aaa398244960b6e89131f929e64875e034497f85e545c4004c2664ed156a0e35d96af3cd638823e30b1793a3414a8943e8
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-serializers@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-serializers@npm:1.5.1"
+  dependencies:
+    "@metaplex-foundation/umi-options": "npm:^1.5.1"
+    "@metaplex-foundation/umi-public-keys": "npm:^1.5.1"
+    "@metaplex-foundation/umi-serializers-core": "npm:^1.5.1"
+    "@metaplex-foundation/umi-serializers-encodings": "npm:^1.5.1"
+    "@metaplex-foundation/umi-serializers-numbers": "npm:^1.5.1"
+  checksum: 10c0/f262a05c95040f910696c8489ab3dd5c98e68f7c874d650d5a42de7107b21b9b7a5e47525299cf22f8a5e14d28eb96837c9a6b124fa2833e38a7059370ddb90c
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-signer-wallet-adapters@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-signer-wallet-adapters@npm:1.5.1"
+  dependencies:
+    "@metaplex-foundation/umi-web3js-adapters": "npm:^1.5.1"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^1.5.1
+    "@solana/web3.js": ^1.72.0
+  checksum: 10c0/a2653d79256331b822ed2304d3a33698ff6da310a5922ecdd6c889e6291d6a9d500f065c8b608832df4ae30123864238d94a99895aac98f0d1433e0be8c97ce7
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-transaction-factory-web3js@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-transaction-factory-web3js@npm:1.5.1"
+  dependencies:
+    "@metaplex-foundation/umi-web3js-adapters": "npm:^1.5.1"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^1.5.1
+    "@solana/web3.js": ^1.72.0
+  checksum: 10c0/a3aebb7d2726640a25a2d0939d7c523adbbdd77239c98fa6dc0a5243bcb75cbeb50d1598e401c2d1a2f307b4ed20d58b1909f9b50bea2f5e01843c99f4c5d06e
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi-web3js-adapters@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi-web3js-adapters@npm:1.5.1"
+  dependencies:
+    buffer: "npm:^6.0.3"
+  peerDependencies:
+    "@metaplex-foundation/umi": ^1.5.1
+    "@solana/web3.js": ^1.72.0
+  checksum: 10c0/9f76b702898a90e2f27df384f8102c8e9294dbc08646e3162e15826701840358983a1ef10e2631a34cd00c3176e003c0aa3e2e710f09326ce6618f5e3d288f91
+  languageName: node
+  linkType: hard
+
+"@metaplex-foundation/umi@npm:^1.5.1":
+  version: 1.5.1
+  resolution: "@metaplex-foundation/umi@npm:1.5.1"
+  dependencies:
+    "@metaplex-foundation/umi-options": "npm:^1.5.1"
+    "@metaplex-foundation/umi-public-keys": "npm:^1.5.1"
+    "@metaplex-foundation/umi-serializers": "npm:^1.5.1"
+  checksum: 10c0/7159080eeb96ba49e8fb3243eccadfd2fbdd8ee0170c9f2eec16bc2a8607fa02753a9677647683e35b8cc69bbb71ceb35f223a6d6f8e85c68d412d6c6cdd6774
   languageName: node
   linkType: hard
 
@@ -6014,6 +6238,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@standard-schema/utils@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@standard-schema/utils@npm:0.3.0"
+  checksum: 10c0/6eb74cd13e52d5fc74054df51e37d947ef53f3ab9e02c085665dcca3c38c60ece8d735cebbdf18fbb13c775fbcb9becb3f53109b0e092a63f0f7389ce0993fd0
+  languageName: node
+  linkType: hard
+
 "@stellar/js-xdr@npm:^3.1.2":
   version: 3.1.2
   resolution: "@stellar/js-xdr@npm:3.1.2"
@@ -6810,6 +7041,15 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10c0/2e1cdba2c410f25649e77856505cd60223250fa12dff7a503e492208dbfdd25f62859918f28aba95315251fd1f5e1ffbfca1e25e73037189ab85dd3f8d0a148c
+  languageName: node
+  linkType: hard
+
+"@types/cors@npm:^2.8.19":
+  version: 2.8.19
+  resolution: "@types/cors@npm:2.8.19"
+  dependencies:
+    "@types/node": "npm:*"
+  checksum: 10c0/b5dd407040db7d8aa1bd36e79e5f3f32292f6b075abc287529e9f48df1a25fda3e3799ba30b4656667ffb931d3b75690c1d6ca71e39f7337ea6dfda8581916d0
   languageName: node
   linkType: hard
 
@@ -7884,8 +8124,10 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "api@workspace:apps/api"
   dependencies:
+    "@types/cors": "npm:^2.8.19"
     "@types/express": "npm:^5.0.6"
     "@types/node": "npm:^25.9.2"
+    cors: "npm:^2.8.6"
     db: "workspace:*"
     dotenv: "npm:^17.4.2"
     express: "npm:^5.2.1"
@@ -7989,6 +8231,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"attr-accept@npm:^2.2.4":
+  version: 2.2.5
+  resolution: "attr-accept@npm:2.2.5"
+  checksum: 10c0/9b4cb82213925cab2d568f71b3f1c7a7778f9192829aac39a281e5418cd00c04a88f873eb89f187e0bf786fa34f8d52936f178e62cbefb9254d57ecd88ada99b
+  languageName: node
+  linkType: hard
+
 "available-typed-arrays@npm:^1.0.7":
   version: 1.0.7
   resolution: "available-typed-arrays@npm:1.0.7"
@@ -8005,7 +8254,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:^1.12.2":
+"axios@npm:^1.12.2, axios@npm:^1.17.0":
   version: 1.17.0
   resolution: "axios@npm:1.17.0"
   dependencies:
@@ -8897,6 +9146,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cookie@npm:^1.0.1":
+  version: 1.1.1
+  resolution: "cookie@npm:1.1.1"
+  checksum: 10c0/79c4ddc0fcad9c4f045f826f42edf54bcc921a29586a4558b0898277fa89fb47be95bc384c2253f493af7b29500c830da28341274527328f18eba9f58afa112c
+  languageName: node
+  linkType: hard
+
 "core-util-is@npm:~1.0.0":
   version: 1.0.3
   resolution: "core-util-is@npm:1.0.3"
@@ -8904,7 +9160,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"cors@npm:^2.8.5":
+"cors@npm:^2.8.5, cors@npm:^2.8.6":
   version: 2.8.6
   resolution: "cors@npm:2.8.6"
   dependencies:
@@ -10170,6 +10426,15 @@ __metadata:
   dependencies:
     flat-cache: "npm:^4.0.0"
   checksum: 10c0/9e2b5938b1cd9b6d7e3612bdc533afd4ac17b2fc646569e9a8abbf2eb48e5eb8e316bc38815a3ef6a1b456f4107f0d0f055a614ca613e75db6bf9ff4d72c1638
+  languageName: node
+  linkType: hard
+
+"file-selector@npm:^2.1.0":
+  version: 2.1.2
+  resolution: "file-selector@npm:2.1.2"
+  dependencies:
+    tslib: "npm:^2.7.0"
+  checksum: 10c0/fe827e0e95410aacfcc3eabc38c29cc36055257f03c1c06b631a2b5af9730c142ad2c52f5d64724d02231709617bda984701f52bd1f4b7aca50fb6585a27c1d2
   languageName: node
   linkType: hard
 
@@ -12182,6 +12447,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"next-themes@npm:^0.4.6":
+  version: 0.4.6
+  resolution: "next-themes@npm:0.4.6"
+  peerDependencies:
+    react: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+    react-dom: ^16.8 || ^17 || ^18 || ^19 || ^19.0.0-rc
+  checksum: 10c0/83590c11d359ce7e4ced14f6ea9dd7a691d5ce6843fe2dc520fc27e29ae1c535118478d03e7f172609c41b1ef1b8da6b8dd2d2acd6cd79cac1abbdbd5b99f2c4
+  languageName: node
+  linkType: hard
+
 "node-addon-api@npm:^3.0.0":
   version: 3.2.1
   resolution: "node-addon-api@npm:3.2.1"
@@ -12214,7 +12489,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"node-fetch@npm:^2.7.0":
+"node-fetch@npm:^2.6.7, node-fetch@npm:^2.7.0":
   version: 2.7.0
   resolution: "node-fetch@npm:2.7.0"
   dependencies:
@@ -13075,7 +13350,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"prop-types@npm:^15.6.0, prop-types@npm:^15.7.2":
+"prop-types@npm:^15.6.0, prop-types@npm:^15.7.2, prop-types@npm:^15.8.1":
   version: 15.8.1
   resolution: "prop-types@npm:15.8.1"
   dependencies:
@@ -13447,6 +13722,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react-dropzone@npm:^15.0.0":
+  version: 15.0.0
+  resolution: "react-dropzone@npm:15.0.0"
+  dependencies:
+    attr-accept: "npm:^2.2.4"
+    file-selector: "npm:^2.1.0"
+    prop-types: "npm:^15.8.1"
+  peerDependencies:
+    react: ">= 16.8 || 18.0.0"
+  checksum: 10c0/fb7b48a709fdd26273707f7aca5c0e77fce2b9c9201122645d3ecfb07ecfbb89e2495273ea141994f0ed0838ee79f27832c0855b2c598b377b342c3965608b54
+  languageName: node
+  linkType: hard
+
+"react-hook-form@npm:^7.78.0":
+  version: 7.78.0
+  resolution: "react-hook-form@npm:7.78.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17 || ^18 || ^19
+  checksum: 10c0/53835398cfcc87a72309532cceb1442e0591d31549ba8ceee592bb169eb16057f52d1bc7ffe6ba46838f3395774be13ec7f15ba2ea902cdbe315cd95fd07e37e
+  languageName: node
+  linkType: hard
+
 "react-is@npm:^16.13.1":
   version: 16.13.1
   resolution: "react-is@npm:16.13.1"
@@ -13522,6 +13819,34 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10c0/b5f3315bead75e72853f492c0b51ba8fb4fa09a4534d7fc42d6fcd59ca3e047cf213279ffc1e35b337e314ef5a04cb2b12544c85e0078802271731c27c09e5aa
+  languageName: node
+  linkType: hard
+
+"react-router-dom@npm:^7.17.0":
+  version: 7.17.0
+  resolution: "react-router-dom@npm:7.17.0"
+  dependencies:
+    react-router: "npm:7.17.0"
+  peerDependencies:
+    react: ">=18"
+    react-dom: ">=18"
+  checksum: 10c0/60fc4022bccf2fb17b0d8ae8e7c4bda866ca9bf2d45edf0bcbefc854e97fa8971a589b6b77b984a19abecb718faffde357c829d9a22a7913790d608cc7433714
+  languageName: node
+  linkType: hard
+
+"react-router@npm:7.17.0, react-router@npm:^7.17.0":
+  version: 7.17.0
+  resolution: "react-router@npm:7.17.0"
+  dependencies:
+    cookie: "npm:^1.0.1"
+    set-cookie-parser: "npm:^2.6.0"
+  peerDependencies:
+    react: ">=18"
+    react-dom: ">=18"
+  peerDependenciesMeta:
+    react-dom:
+      optional: true
+  checksum: 10c0/dfa9b0182edba6fab14ef5ac297b292068e71e05bf7e07c6b45fe073d77002089e8e164542364232a8bbb0c7d3ec47b57b78db3984c4383e12308f2d31ad404a
   languageName: node
   linkType: hard
 
@@ -14004,6 +14329,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"set-cookie-parser@npm:^2.6.0":
+  version: 2.7.2
+  resolution: "set-cookie-parser@npm:2.7.2"
+  checksum: 10c0/4381a9eb7ee951dfe393fe7aacf76b9a3b4e93a684d2162ab35594fa4053cc82a4d7d7582bf397718012c9adcf839b8cd8f57c6c42901ea9effe33c752da4a45
+  languageName: node
+  linkType: hard
+
 "set-function-length@npm:^1.2.2":
   version: 1.2.2
   resolution: "set-function-length@npm:1.2.2"
@@ -14231,6 +14563,16 @@ __metadata:
   dependencies:
     atomic-sleep: "npm:^1.0.0"
   checksum: 10c0/6b40f2e91a999819b1dc24018a5d1c8b74e66e5d019eabad17d5b43fc309b32255b7c405ed6ec885693c8f2b969099ce96aeefde027180928bc58c034234a86d
+  languageName: node
+  linkType: hard
+
+"sonner@npm:^2.0.7":
+  version: 2.0.7
+  resolution: "sonner@npm:2.0.7"
+  peerDependencies:
+    react: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+    react-dom: ^18.0.0 || ^19.0.0 || ^19.0.0-rc
+  checksum: 10c0/6966ab5e892ed6aab579a175e4a24f3b48747f0fc21cb68c3e33cb41caa7a0eebeb098c210545395e47a18d585eb8734ae7dd12d2bd18c8a3294a1ee73f997d9
   languageName: node
   linkType: hard
 
@@ -14706,7 +15048,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0, tslib@npm:^2.8.0, tslib@npm:^2.8.1":
+"tslib@npm:^2.0.0, tslib@npm:^2.0.1, tslib@npm:^2.1.0, tslib@npm:^2.3.0, tslib@npm:^2.4.0, tslib@npm:^2.7.0, tslib@npm:^2.8.0, tslib@npm:^2.8.1":
   version: 2.8.1
   resolution: "tslib@npm:2.8.1"
   checksum: 10c0/9c4759110a19c53f992d9aae23aac5ced636e99887b51b9e61def52611732872ff7668757d4e4c61f19691e36f4da981cd9485e869b4a7408d689f6bf1f14e62
@@ -15369,6 +15711,11 @@ __metadata:
   dependencies:
     "@eslint/js": "npm:^9.39.4"
     "@fontsource-variable/jetbrains-mono": "npm:^5.2.8"
+    "@hookform/resolvers": "npm:^5.4.0"
+    "@metaplex-foundation/mpl-token-metadata": "npm:^3.4.0"
+    "@metaplex-foundation/umi": "npm:^1.5.1"
+    "@metaplex-foundation/umi-bundle-defaults": "npm:^1.5.1"
+    "@metaplex-foundation/umi-signer-wallet-adapters": "npm:^1.5.1"
     "@phosphor-icons/react": "npm:^2.1.10"
     "@solana/wallet-adapter-base": "npm:^0.9.27"
     "@solana/wallet-adapter-react": "npm:^0.15.39"
@@ -15380,22 +15727,30 @@ __metadata:
     "@types/react": "npm:^19.2.14"
     "@types/react-dom": "npm:^19.2.3"
     "@vitejs/plugin-react": "npm:^6.0.1"
+    axios: "npm:^1.17.0"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
     eslint: "npm:^9.39.4"
     eslint-plugin-react-hooks: "npm:^7.0.1"
     eslint-plugin-react-refresh: "npm:^0.5.2"
     globals: "npm:^17.4.0"
+    next-themes: "npm:^0.4.6"
     radix-ui: "npm:^1.5.0"
     react: "npm:^19.2.4"
     react-dom: "npm:^19.2.4"
+    react-dropzone: "npm:^15.0.0"
+    react-hook-form: "npm:^7.78.0"
+    react-router: "npm:^7.17.0"
+    react-router-dom: "npm:^7.17.0"
     shadcn: "npm:^4.11.0"
+    sonner: "npm:^2.0.7"
     tailwind-merge: "npm:^3.6.0"
     tailwindcss: "npm:^4.3.0"
     tw-animate-css: "npm:^1.4.0"
     typescript: "npm:~6.0.2"
     typescript-eslint: "npm:^8.58.0"
     vite: "npm:^8.0.4"
+    zod: "npm:^4.4.3"
   languageName: unknown
   linkType: soft
 
@@ -15708,6 +16063,15 @@ __metadata:
   version: 5.0.0
   resolution: "yallist@npm:5.0.0"
   checksum: 10c0/a499c81ce6d4a1d260d4ea0f6d49ab4da09681e32c3f0472dee16667ed69d01dae63a3b81745a24bd78476ec4fcf856114cb4896ace738e01da34b2c42235416
+  languageName: node
+  linkType: hard
+
+"yaml@npm:^2.7.0":
+  version: 2.9.0
+  resolution: "yaml@npm:2.9.0"
+  bin:
+    yaml: bin.mjs
+  checksum: 10c0/f340718df45e97a9551b9bf9dac61c80050bc464513b710debfb5067c380c8472e3b67809cffacb4ab5ffb5e66ef9310816c88b05f371cec60abfedd8c88e0a2
   languageName: node
   linkType: hard
 
