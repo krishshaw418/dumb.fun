@@ -35,6 +35,8 @@ import axios, { AxiosError } from "axios";
 import { useUmi } from "@/hooks/umi-provider";
 import { createGenericFile } from "@metaplex-foundation/umi";
 import { useCreateMint } from "@/hooks/createMint";
+import { useCreateMetadataPda } from "@/hooks/createMetadataPda";
+import { useConnection } from "@solana/wallet-adapter-react";
 
 const VALID_FILE_TYPE = ["image/png", "image/jpg", "image/gif", "image/jpeg"];
 
@@ -63,6 +65,8 @@ const formSchema = z.object({
 export function TokenCreateForm() {
   const wallet = useWallet();
   const { initMint } = useCreateMint();
+  const { createMetadataPda } = useCreateMetadataPda();
+  const connection = useConnection().connection;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -97,21 +101,41 @@ export function TokenCreateForm() {
       };
       const metaDataJsonUri = await umi.uploader.uploadJson(metaData);
 
-      console.log(metaDataJsonUri);
-      await initMint({
+      const result = await initMint();
+      if (!result?.signature) {
+        throw new Error("Failed to initialize mint account!");
+      }
+
+      const latestBlockHash = await connection.getLatestBlockhash();
+      await connection.confirmTransaction(
+        {
+          signature: result.signature,
+          blockhash: latestBlockHash.blockhash,
+          lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+        },
+        "finalized",
+      );
+
+      await createMetadataPda(result.mint.publicKey, {
         name: metaData.name,
         symbol: metaData.symbol,
         url: metaDataJsonUri,
-        description: metaData.description,
       });
 
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_API_URL}/api/new-token`,
-        data,
+        {
+          mint: result.mint.publicKey.toBase58(),
+          creator: wallet.publicKey?.toBase58(),
+          createdAt: new Date(Date.now()).toISOString(),
+          name: metaData.name,
+          symbol: metaData.symbol,
+          url: metaDataJsonUri,
+        },
       );
 
-      console.log(response);
       form.reset();
+      toast.success(response.data.message);
     } catch (error) {
       console.error(error);
       if (error instanceof AxiosError) {

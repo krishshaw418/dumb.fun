@@ -10,12 +10,7 @@ export function useCreateMint() {
   const wallet = useWallet();
   const connection = useConnection().connection;
 
-  const initMint = async (metaDataJson: {
-    name: string;
-    symbol: string;
-    url: string;
-    description?: string;
-  }) => {
+  const initMint = async () => {
     if (!wallet.publicKey) {
       return;
     }
@@ -46,11 +41,19 @@ export function useCreateMint() {
     if (!wallet.signTransaction) {
       return;
     }
-    
-    const signature = await wallet.sendTransaction(transaction, connection, {
-      signers: [mint]
-    });
-    console.log(signature);
+
+    try {
+      const signature = await wallet.sendTransaction(transaction, connection, {
+        signers: [mint],
+      });
+      console.log(signature);
+      if (!signature) {
+        throw new Error("Failed to send txn!");
+      }
+      return { signature, mint };
+    } catch (error) {
+      throw error;
+    }
   };
   return { initMint };
 }
