@@ -32,6 +32,9 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group";
 import axios, { AxiosError } from "axios";
+import { useUmi } from "@/hooks/umi-provider";
+import { createGenericFile } from "@metaplex-foundation/umi";
+import { useCreateMint } from "@/hooks/createMint";
 
 const VALID_FILE_TYPE = ["image/png", "image/jpg", "image/gif", "image/jpeg"];
 
@@ -59,6 +62,7 @@ const formSchema = z.object({
 
 export function TokenCreateForm() {
   const wallet = useWallet();
+  const { initMint } = useCreateMint();
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -68,10 +72,39 @@ export function TokenCreateForm() {
       image: undefined,
     },
   });
+  const { umi } = useUmi();
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     console.log(data);
+    console.log(data.image instanceof File);
+    const bytes = await data.image.arrayBuffer();
     try {
+      const umiFile = createGenericFile(
+        new Uint8Array(bytes),
+        data.image.name,
+        {
+          contentType: data.image.type,
+          tags: [{ name: "Content-Type", value: data.image.type }],
+        },
+      );
+      const [imgUri] = await umi.uploader.upload([umiFile]);
+
+      const metaData = {
+        name: data.name,
+        symbol: data.symbol,
+        description: data.description,
+        image: imgUri,
+      };
+      const metaDataJsonUri = await umi.uploader.uploadJson(metaData);
+
+      console.log(metaDataJsonUri);
+      await initMint({
+        name: metaData.name,
+        symbol: metaData.symbol,
+        url: metaDataJsonUri,
+        description: metaData.description,
+      });
+
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_API_URL}/api/new-token`,
         data,

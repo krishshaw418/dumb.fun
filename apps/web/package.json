@@ -16,7 +16,10 @@
     "@metaplex-foundation/umi": "^1.5.1",
     "@metaplex-foundation/umi-bundle-defaults": "^1.5.1",
     "@metaplex-foundation/umi-signer-wallet-adapters": "^1.5.1",
+    "@metaplex-foundation/umi-uploader-irys": "^1.5.0",
     "@phosphor-icons/react": "^2.1.10",
+    "@solana/spl-token": "^0.4.14",
+    "@solana/spl-token-metadata": "^0.1.6",
     "@solana/wallet-adapter-base": "^0.9.27",
     "@solana/wallet-adapter-react": "^0.15.39",
     "@solana/wallet-adapter-react-ui": "patch:@solana/wallet-adapter-react-ui@npm%3A0.9.39#~/.yarn/patches/@solana-wallet-adapter-react-ui-npm-0.9.39-505a954288.patch",
@@ -53,6 +56,7 @@
     "globals": "^17.4.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.58.0",
-    "vite": "^8.0.4"
+    "vite": "^8.0.4",
+    "vite-plugin-node-polyfills": "^0.28.0"
   }
 }
