@@ -32,11 +32,16 @@ import {
   InputGroupTextarea,
 } from "@/components/ui/input-group";
 import axios, { AxiosError } from "axios";
-import { useUmi } from "@/hooks/umi-provider";
+import { useUmi } from "@/lib/umi-provider";
 import { createGenericFile } from "@metaplex-foundation/umi";
 import { useCreateMint } from "@/hooks/createMint";
 import { useCreateMetadataPda } from "@/hooks/createMetadataPda";
-import { useConnection } from "@solana/wallet-adapter-react";
+import {
+  WalletSendTransactionError,
+  WalletSignTransactionError,
+} from "@solana/wallet-adapter-base";
+import type { Dispatch, SetStateAction } from "react";
+import type { PublicKey } from "@solana/web3.js";
 
 const VALID_FILE_TYPE = ["image/png", "image/jpg", "image/gif", "image/jpeg"];
 
@@ -55,18 +60,19 @@ const formSchema = z.object({
   image: z
     .instanceof(File)
     .refine((file) => VALID_FILE_TYPE.includes(file.type), {
-      error: "Invalid file type!",
+      error: "Image file required (./jpg, ./png, ./jpeg, ./gif)",
     })
     .refine((file) => file.size <= 15 * 1024 * 1024, {
       error: "Max size 15 MB!",
     }),
 });
 
-export function TokenCreateForm() {
+export function TokenCreateForm(props: {
+  setMint: Dispatch<SetStateAction<PublicKey | undefined>>;
+}) {
   const wallet = useWallet();
   const { initMint } = useCreateMint();
   const { createMetadataPda } = useCreateMetadataPda();
-  const connection = useConnection().connection;
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -76,7 +82,7 @@ export function TokenCreateForm() {
       image: undefined,
     },
   });
-  const { umi } = useUmi();
+  const umi = useUmi();
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     console.log(data);
@@ -106,21 +112,13 @@ export function TokenCreateForm() {
         throw new Error("Failed to initialize mint account!");
       }
 
-      const latestBlockHash = await connection.getLatestBlockhash();
-      await connection.confirmTransaction(
-        {
-          signature: result.signature,
-          blockhash: latestBlockHash.blockhash,
-          lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
-        },
-        "finalized",
-      );
-
       await createMetadataPda(result.mint.publicKey, {
         name: metaData.name,
         symbol: metaData.symbol,
         url: metaDataJsonUri,
       });
+
+      props.setMint(result.mint.publicKey);
 
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_API_URL}/api/new-token`,
@@ -141,13 +139,23 @@ export function TokenCreateForm() {
       if (error instanceof AxiosError) {
         console.log(error.response?.data.error);
       }
+      if (error instanceof WalletSignTransactionError) {
+        console.log(error.message);
+        toast.error(error.message);
+        return;
+      }
+      if (error instanceof WalletSendTransactionError) {
+        console.log(error.message);
+        toast.error(error.message);
+        return;
+      }
       toast.error("Something went wrong!");
     }
   }
 
   return (
-    <div className="w-200">
-      <Card className="w-full rounded-xl bg-[#212225] text-white flex flex-col gap-5 p-5">
+    <div className="w-full">
+      <Card className="rounded-xl bg-[#212225] text-white flex flex-col gap-5 p-5">
         <CardHeader>
           <CardTitle className="text-xl">Create new coin</CardTitle>
           <CardDescription>

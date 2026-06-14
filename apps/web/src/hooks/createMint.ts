@@ -38,10 +38,6 @@ export function useCreateMint() {
       ),
     );
 
-    if (!wallet.signTransaction) {
-      return;
-    }
-
     try {
       const signature = await wallet.sendTransaction(transaction, connection, {
         signers: [mint],
@@ -50,6 +46,17 @@ export function useCreateMint() {
       if (!signature) {
         throw new Error("Failed to send txn!");
       }
+      console.log("New token mint: ", mint.publicKey.toBase58());
+      const latestBlockHash = await connection.getLatestBlockhash();
+      await connection.confirmTransaction(
+        {
+          signature: signature,
+          blockhash: latestBlockHash.blockhash,
+          lastValidBlockHeight: latestBlockHash.lastValidBlockHeight,
+        },
+        "confirmed",
+      );
+
       return { signature, mint };
     } catch (error) {
       throw error;

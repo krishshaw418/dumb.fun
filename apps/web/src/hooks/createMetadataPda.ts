@@ -1,11 +1,11 @@
 import { createMetadataAccountV3 } from "@metaplex-foundation/mpl-token-metadata";
 import { PublicKey } from "@solana/web3.js";
-import { useUmi } from "./umi-provider";
+import { useUmi } from "../lib/umi-provider";
 import { publicKey } from "@metaplex-foundation/umi";
 import { base58 } from "@metaplex-foundation/umi/serializers";
 
 export function useCreateMetadataPda() {
-  const { umi } = useUmi();
+  const umi = useUmi();
 
   const createMetadataPda = async (
     mint: PublicKey,
