@@ -11,7 +11,6 @@ import { program } from "./program";
 import { PublicKey } from "@solana/web3.js";
 import bs58 from "bs58";
 
-
 const coder = new BorshInstructionCoder(idl as Idl);
 const eventCoder = new BorshCoder(idl as Idl);
 
@@ -28,22 +27,22 @@ export const decodeInstructionData = (data: any) => {
 };
 
 // Filter events
-export const decodeInstructionMeta = (data: any) => {
+export const decodeInstructionMeta = async (data: any) => {
   let programLogs;
   let latestTxn;
   if (data.transaction.transaction) {
     programLogs = data.transaction?.transaction?.meta.logMessages;
     latestTxn = {
       sig: bs58.encode(Buffer.from(data.transaction?.transaction?.signature)),
-      slot: BigInt(data.transaction?.slot)
+      slot: BigInt(data.transaction?.slot),
     };
   }
-  
+
   if (!programLogs || !latestTxn) {
     programLogs = data.meta.logMessages;
     latestTxn = {
       sig: data.transaction.signatures[0],
-      slot: data.slot
+      slot: BigInt(data.slot),
     };
   }
 
@@ -65,13 +64,10 @@ export const decodeInstructionMeta = (data: any) => {
           console.error("Event is null!");
           return;
         }
-        processAndSaveData({
+        await processAndSaveData({
           eventName: event.name,
           eventData: event.data,
-          latestTxn: latestTxn
-        }).catch((err) => {
-          console.error(err);
-          return;
+          latestTxn: latestTxn,
         });
       } catch (error) {
         console.error(error);
@@ -86,8 +82,8 @@ export const processAndSaveData = async (data: {
   eventName: string;
   eventData: any;
   latestTxn: {
-    sig: string,
-    slot: bigint
+    sig: string;
+    slot: bigint;
   };
 }) => {
   let dataStructure: TokenCreatedEventData | TradeEventData;
@@ -109,12 +105,14 @@ export const processAndSaveData = async (data: {
         const newToken = await prisma.token.findUnique({
           where: {
             mint: dataStructure.mint,
-            creator: dataStructure.creator
-          }
+            creator: dataStructure.creator,
+          },
         });
 
         if (!newToken) {
-          throw new Error("New token not found, failed to initialize bonding curve!")
+          throw new Error(
+            "New token not found, failed to initialize bonding curve!",
+          );
         }
 
         await prisma.$transaction(async (tx) => {
@@ -123,32 +121,31 @@ export const processAndSaveData = async (data: {
             create: {
               mint: (dataStructure as TokenCreatedEventData).mint,
               creator: (dataStructure as TokenCreatedEventData).creator,
-              timestamp: (dataStructure as TokenCreatedEventData).timestamp
+              timestamp: (dataStructure as TokenCreatedEventData).timestamp,
             },
             update: {
               mint: (dataStructure as TokenCreatedEventData).mint,
               creator: (dataStructure as TokenCreatedEventData).creator,
-              timestamp: (dataStructure as TokenCreatedEventData).timestamp
+              timestamp: (dataStructure as TokenCreatedEventData).timestamp,
             },
             where: {
-              mint: (dataStructure as TokenCreatedEventData).mint
-            }
+              mint: (dataStructure as TokenCreatedEventData).mint,
+            },
           });
 
           // update latest slot processed
           await tx.latestTxn.update({
             where: {
-              id: "dumb-fun-indexer"
+              id: "dumb-fun-indexer",
             },
             data: {
               sig: data.latestTxn.sig,
-              slot: data.latestTxn.slot
-            }
+              slot: data.latestTxn.slot,
+            },
           });
         });
       } catch (error) {
-        console.error(error);
-        return;
+        throw error;
       }
       break;
     }
@@ -182,6 +179,11 @@ export const processAndSaveData = async (data: {
             },
           });
 
+          console.log(
+            "bonding curve update failing for mint: ",
+            dataStructure.mint,
+          );
+
           // update bonding curve state
           await tx.bondingCurveState.update({
             where: {
@@ -196,17 +198,16 @@ export const processAndSaveData = async (data: {
           // update latest slot processed
           await tx.latestTxn.update({
             where: {
-              id: "dumb-fun-indexer"
+              id: "dumb-fun-indexer",
             },
             data: {
               sig: data.latestTxn.sig,
-              slot: data.latestTxn.slot
-            }
+              slot: data.latestTxn.slot,
+            },
           });
         });
       } catch (error) {
-        console.error(error);
-        return;
+        throw error;
       }
       break;
     }
@@ -253,17 +254,16 @@ export const processAndSaveData = async (data: {
           // update latest slot processed
           await tx.latestTxn.update({
             where: {
-              id: "dumb-fun-indexer"
+              id: "dumb-fun-indexer",
             },
             data: {
               sig: data.latestTxn.sig,
-              slot: data.latestTxn.slot
-            }
+              slot: data.latestTxn.slot,
+            },
           });
         });
       } catch (error) {
-        console.error(error);
-        return;
+        throw error;
       }
       break;
     }
@@ -276,14 +276,13 @@ export const processAndSaveData = async (data: {
 
 // filter missed data
 export const backfillData = async () => {
-
   const programId = new PublicKey(program.programId);
 
   const latestTxRecord = await prisma.latestTxn.findFirst({
     where: {
-      id: "dumb-fun-indexer"
+      id: "dumb-fun-indexer",
     },
-    select: { sig: true }
+    select: { sig: true },
   });
 
   if (!latestTxRecord) {
@@ -303,14 +302,13 @@ export const backfillData = async () => {
     });
   }
 
-  const signatureList = signaturesInfo.map(tx => tx.signature);
-  signatureList.reverse();
+  const signatureList = signaturesInfo.map((tx) => tx.signature);
+  signatureList.reverse(); // reverse the received slots to inceasing order
 
   for (let sig of signatureList) {
-    const txDetail = await connection.getParsedTransaction(sig, 'confirmed');
-    console.log("Txn details: \n", txDetail);
-    decodeInstructionMeta(txDetail);
+    const txDetail = await connection.getParsedTransaction(sig, "confirmed");
+    await decodeInstructionMeta(txDetail);
   }
 
   return;
-}
+};

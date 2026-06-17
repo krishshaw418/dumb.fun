@@ -17,11 +17,11 @@ async function main() {
 
   const stream = await client.subscribe();
 
-  stream.on("data", (data) => {
-    console.log(data);
+  stream.on("data", async (data) => {
+    // console.log(data);
     if (data.transaction) {
       // decodeInstructionData(data);
-      decodeInstructionMeta(data);
+      await decodeInstructionMeta(data);
     }
   });
 
