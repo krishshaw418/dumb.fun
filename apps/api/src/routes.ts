@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Router } from "express";
 import { newTokenSchema } from "./schema";
-import { createNewToken, fetchAllTokens } from "./services";
+import { createNewToken, fetchAllCoins, fetchCoin } from "./services";
 
 const router = Router();
 
@@ -21,13 +21,13 @@ router.post("/new-token", async (req: Request, res: Response) => {
         res.status(201).json({ success: true, message: "Created new token!" });
     } catch (error) {
         console.error(error);
-        return res.status(500).json({ success: false, error: "Failed to create new token!" });
+        res.status(500).json({ success: false, error: "Failed to create new token!" });
     }
 });
 
-router.get("/fetchAllTokens", async (req: Request, res: Response) => {
+router.get("/fetchAllCoins", async (req: Request, res: Response) => {
     try {
-        const tokens = await fetchAllTokens();
+        const tokens = await fetchAllCoins();
 
         res.status(200).json({ success: true, data: tokens });
     } catch (error) {
@@ -35,5 +35,27 @@ router.get("/fetchAllTokens", async (req: Request, res: Response) => {
         res.status(500).json({ success: "false", error: "Failed to fetch tokens!" });
     }
 });
+
+router.get("/coin/{*splat}", async (req: Request, res: Response) => {
+    console.log(req.params.splat[0]);
+    const mint = req.params.splat[0];
+
+    if (!(/^[1-9A-HJ-NP-Za-km-z]+$/).test(mint)) {
+        return res.status(400).json({ success: false, error: "Invalid mint address!" });
+    }
+    
+    try {
+        const coinData = await fetchCoin(mint);
+
+        if (!coinData) {
+            return res.status(404).json({ success: false, error: "Coin not found!" });
+        }
+
+        res.status(200).json({ success: true, data: coinData });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: false, error: "Failed to fetch coin!" });
+    }  
+})
 
 export default router;

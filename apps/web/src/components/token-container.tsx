@@ -11,7 +11,7 @@ function TokenContainer() {
     const fetchAllTokens = async () => {
       try {
         const response = await axios.get(
-          `${import.meta.env.VITE_BASE_API_URL}/api/fetchAllTokens`,
+          `${import.meta.env.VITE_BASE_API_URL}/api/fetchAllCoins`,
         );
 
         const data = response.data;
@@ -19,7 +19,7 @@ function TokenContainer() {
           console.error(data.error);
           return;
         } else {
-          console.log(data.data);
+          // console.log(data.data);
           setTokens(data.data);
         }
       } catch (error) {

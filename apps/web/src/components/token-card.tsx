@@ -2,18 +2,10 @@ import { Card, CardHeader, CardContent } from "./ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import "./css/token-card.css";
 import type { Token } from "types";
-import axios from "axios";
 import { useState, useEffect } from "react";
 import { Skeleton } from "./ui/skeleton";
-
-interface TokenDataUi {
-  name: string;
-  symbol: string;
-  img: string;
-  description: string;
-  marketCap: string;
-  createdAt: string;
-}
+import type { TokenDataUi } from "@/lib/types";
+import { structureTokenData } from "@/lib/utils";
 
 function TokenCard(props: {
   token: Token | undefined
@@ -28,36 +20,19 @@ function TokenCard(props: {
       "https://pump.mypinata.cloud/ipfs/QmbbpJXptHMtmYNH3paXUZxjivtfqXkR1e4DTycWvyFat3?img-width=88&img-dpr=2&img-onerror=redirect",
   };
 
-  const structureTokenData = async (token: Token) => {
-    try {
-      const response = await axios.get(`${token.url}`);
-
-      const structuredTokenData: TokenDataUi = {
-        name: token.name,
-        symbol: token.symbol,
-        img: response.data.image,
-        description: response.data.description ?? "",
-        marketCap: "$1.27M",
-        createdAt: "2y"
-      };
-
-      setTokenData(structuredTokenData);
-    } catch (error) {
-      console.error(error);
-      return;
-    }
-  }
-
   useEffect(() => {
-    const setTokenData = async () => {
+    const setData = async () => {
       if (props.token) {
-        await structureTokenData(props.token);
-        setIsLoading(false);
+        const structuredTokenData = await structureTokenData(props.token);
+        if (structuredTokenData) {
+          setTokenData(structuredTokenData);
+          setIsLoading(false);
+        }
       } else {
         return;
       }
     }
-    setTokenData();
+    setData();
   }, []);
 
   return (

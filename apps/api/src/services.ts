@@ -14,7 +14,7 @@ export const createNewToken = async (data: Token) => {
     }
 }
 
-export const fetchAllTokens = async () => {
+export const fetchAllCoins = async () => {
     try {
         const tokens: Token[] = await prisma.token.findMany();
         return tokens;
@@ -23,7 +23,7 @@ export const fetchAllTokens = async () => {
     }
 }
 
-export const getTokenData = async (mint: string) => {
+export const fetchCoin = async (mint: string) => {
     try {
         const token = await prisma.token.findUnique({
             where: {
