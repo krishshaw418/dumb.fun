@@ -1,53 +1,93 @@
 import { Card, CardHeader, CardContent } from "./ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "./ui/avatar";
 import "./css/token-card.css";
+import type { Token } from "types";
+import axios from "axios";
+import { useState, useEffect } from "react";
+import { Skeleton } from "./ui/skeleton";
 
-function TokenCard() {
+interface TokenDataUi {
+  name: string;
+  symbol: string;
+  img: string;
+  description: string;
+  marketCap: string;
+  createdAt: string;
+}
+
+function TokenCard(props: {
+  token: Token | undefined
+}) {
+
+  const [tokenData, setTokenData] = useState<TokenDataUi | undefined>(undefined);
+  const [isLoading, setIsLoading] = useState(true);
+
   const creatorData = {
-    pubKey: "BXAWg4JbaeyvAHpiyYQ3Xr3bUh6FsyDHwwSkB5dmyGF",
+    pubKey: props.token?.creator,
     avatarImg:
       "https://pump.mypinata.cloud/ipfs/QmbbpJXptHMtmYNH3paXUZxjivtfqXkR1e4DTycWvyFat3?img-width=88&img-dpr=2&img-onerror=redirect",
   };
 
-  const tokenData = {
-    creator: "BXAWg4JbaeyvAHpiyYQ3Xr3bUh6FsyDHwwSkB5dmyGF",
-    img: "https://images.pump.fun/coin-image/ACtfUWtgvaXrQGNMiohTusi5jcx5RJf5zwu9aAxkpump?variant=600x600&ipfs=bafkreibm2rehj36ekplu7ilfmu5npmpmn5vdl3izlat2dkobhthzvfo2fm&src=https%3A%2F%2Fpump.mypinata.cloud%2Fipfs%2Fbafkreibm2rehj36ekplu7ilfmu5npmpmn5vdl3izlat2dkobhthzvfo2fm",
-    name: "unc",
-    symbol: "$unc",
-    description:
-      "Decentralized federated learning - on-chain verification, IPFS model storage, zero data transfer.",
-    marketCap: "1.27M",
-    createdAt: "2y",
-  };
+  const structureTokenData = async (token: Token) => {
+    try {
+      const response = await axios.get(`${token.url}`);
+
+      const structuredTokenData: TokenDataUi = {
+        name: token.name,
+        symbol: token.symbol,
+        img: response.data.image,
+        description: response.data.description ?? "",
+        marketCap: "$1.27M",
+        createdAt: "2y"
+      };
+
+      setTokenData(structuredTokenData);
+    } catch (error) {
+      console.error(error);
+      return;
+    }
+  }
+
+  useEffect(() => {
+    const setTokenData = async () => {
+      if (props.token) {
+        await structureTokenData(props.token);
+        setIsLoading(false);
+      } else {
+        return;
+      }
+    }
+    setTokenData();
+  }, []);
 
   return (
-    <Card className="bg-transparent">
-      <CardHeader>
-        <img src={tokenData.img} alt="coin-image" className="rounded-md" />
+    <Card className="bg-transparent grid grid-rows-2">
+      <CardHeader className="aspect-square">
+        {isLoading? <Skeleton className="aspect-square rounded-lg"/>: <img src={tokenData?.img} alt="coin-image" className="aspect-square rounded-md" />}
       </CardHeader>
       <CardContent className="flex flex-col gap-1.5">
-        <span>
-          <p
+        <span className={isLoading? "space-y-2": ""}>
+          {isLoading? <Skeleton className="h-5 w-2/3 rounded-sm"/>: <p
             aria-label="coin-name"
             className="font-extrabold text-2xl primary-text-color"
           >
-            {tokenData.name}
-          </p>
-          <p
+            {tokenData?.name}
+          </p>}
+          {isLoading? <Skeleton className="h-5 w-1/3 rounded-sm"/>: <p
             aria-label="symbol"
             className="text-lg font-extralight secondary-text-color"
           >
-            {tokenData.symbol}
-          </p>
+            {tokenData?.symbol}
+          </p>}
         </span>
-        <span aria-label="market-cap" className="flex items-baseline gap-2">
+        {isLoading? <Skeleton className="h-5 w-2/3 rounded-sm"/>: <span aria-label="market-cap" className={isLoading? "space-x-2": "flex items-baseline gap-2"}>
           <p className="font-extrabold text-xl primary-text-color">
-            {tokenData.marketCap}
+            {tokenData?.marketCap}
           </p>
           <p className="secondary-text-color text-base font-extralight">MC</p>
-        </span>
+        </span>}
 
-        <span className="flex items-center gap-2 secondary-text-color">
+        {isLoading? <Skeleton className="h-5 w-1/3 rounded-sm"/>: <span className="flex items-center gap-2 secondary-text-color">
           <Avatar size="sm">
             <AvatarImage
               src={creatorData.avatarImg}
@@ -56,14 +96,14 @@ function TokenCard() {
             />
             <AvatarFallback>ML</AvatarFallback>
           </Avatar>
-          <p aria-label="owner">{creatorData.pubKey.substring(0, 6)}</p>
-          <p aria-label="created-at">{tokenData.createdAt}</p>
-        </span>
-        <span>
+          <p aria-label="owner">{creatorData.pubKey?.substring(0, 6)}</p>
+          <p aria-label="created-at">{tokenData?.createdAt}</p>
+        </span>}
+        {isLoading? <Skeleton className="h-5 w-2/3 rounded-sm"/>: <span>
           <p className="line-clamp-2 secondary-text-color font-extralight">
-            {tokenData.description}
+            {tokenData?.description}
           </p>
-        </span>
+        </span>}
       </CardContent>
     </Card>
   );

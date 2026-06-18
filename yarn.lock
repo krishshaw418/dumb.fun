@@ -17277,6 +17277,7 @@ __metadata:
     tailwind-merge: "npm:^3.6.0"
     tailwindcss: "npm:^4.3.0"
     tw-animate-css: "npm:^1.4.0"
+    types: "workspace:*"
     typescript: "npm:~6.0.2"
     typescript-eslint: "npm:^8.58.0"
     vite: "npm:^8.0.4"

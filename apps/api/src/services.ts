@@ -13,3 +13,26 @@ export const createNewToken = async (data: Token) => {
         throw error;
     }
 }
+
+export const fetchAllTokens = async () => {
+    try {
+        const tokens: Token[] = await prisma.token.findMany();
+        return tokens;
+    } catch (error) {
+        throw error;
+    }
+}
+
+export const getTokenData = async (mint: string) => {
+    try {
+        const token = await prisma.token.findUnique({
+            where: {
+                mint
+            }
+        });
+
+        return token;
+    } catch (error) {
+        throw error;
+    }
+}

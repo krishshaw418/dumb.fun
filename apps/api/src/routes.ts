@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { Router } from "express";
 import { newTokenSchema } from "./schema";
-import { createNewToken } from "./services";
+import { createNewToken, fetchAllTokens } from "./services";
 
 const router = Router();
 
@@ -22,6 +22,17 @@ router.post("/new-token", async (req: Request, res: Response) => {
     } catch (error) {
         console.error(error);
         return res.status(500).json({ success: false, error: "Failed to create new token!" });
+    }
+});
+
+router.get("/fetchAllTokens", async (req: Request, res: Response) => {
+    try {
+        const tokens = await fetchAllTokens();
+
+        res.status(200).json({ success: true, data: tokens });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ success: "false", error: "Failed to fetch tokens!" });
     }
 });
 
