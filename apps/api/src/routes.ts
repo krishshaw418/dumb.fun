@@ -37,7 +37,6 @@ router.get("/fetchAllCoins", async (req: Request, res: Response) => {
 });
 
 router.get("/coin/{*splat}", async (req: Request, res: Response) => {
-    console.log(req.params.splat[0]);
     const mint = req.params.splat[0];
 
     if (!(/^[1-9A-HJ-NP-Za-km-z]+$/).test(mint)) {

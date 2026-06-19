@@ -32,7 +32,7 @@ function TokenContainer() {
   }, []);
 
   return (
-    <div className="grid gap-5 grid-row-auto grid-cols-6">
+    <div className="grid gap-5 grid-row-auto sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 sm:justify-center">
       {tokens && tokens.map((token, id) => {
         return (
           <TokenCard key={id} token={token}/>

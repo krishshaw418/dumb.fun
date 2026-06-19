@@ -68,7 +68,7 @@ export function BondingCurveInitForm() {
 
   return (
     <div>
-      <Card className="rounded-xl bg-[#212225] text-white flex flex-col gap-5 p-5">
+      <Card className="rounded-xl bg-[#18191b] text-white flex flex-col gap-5 p-5">
         <CardHeader>
           <CardTitle className="text-xl">Initialize Bonding Curve</CardTitle>
           <CardDescription>

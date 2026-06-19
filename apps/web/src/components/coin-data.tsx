@@ -10,6 +10,7 @@ import type { Token } from "types";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import CopyToClipboard from "@/components/ui/copy";
+import { Skeleton } from "./ui/skeleton";
 
 function CoinData() {
   const params = useParams();
@@ -18,6 +19,7 @@ function CoinData() {
   const [creator, setCreator] = useState<
     { pubKey: string; avatarImg: string } | undefined
   >(undefined);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchCoinData = async (mint: string) => {
@@ -42,6 +44,7 @@ function CoinData() {
 
         if (structuredTokenData) {
           setCoin(structuredTokenData);
+          setIsLoading(false);
         } else {
           console.error("Failed to structure coin data!");
         }
@@ -57,15 +60,17 @@ function CoinData() {
 
   return (
     <>
-      {coin && (
-        <Card className="w-2/4 h-1/4 bg-[#18191b] rounded-lg p-5 text-white">
+      {coin && !isLoading && (
+        <Card className="w-5/8 h-1/4 bg-[#18191b] rounded-lg p-5 text-white">
           <CardContent className="flex justify-between items-center">
             <div className="flex items-center gap-4">
-              <img
-                src={coin.img}
-                alt="coin-img"
-                className="w-22 h-22 rounded-lg"
-              />
+              <div className="w-22 h-22 aspect-square rounded-lg overflow-hidden">
+                <img
+                  src={coin.img}
+                  alt="coin-img"
+                  className="aspect-square scale-100 hover:scale-110 transition-transform duration-200"
+                />
+              </div>
               <div className="flex flex-col gap-2">
                 <div className="space-x-4">
                   <span className="font-extrabold text-xl">{coin.name}</span>

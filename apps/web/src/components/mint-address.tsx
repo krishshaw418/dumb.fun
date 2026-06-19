@@ -4,7 +4,7 @@ import CopyToClipboard from "./ui/copy";
 function MintAddressDisplay(props: { mint: string | undefined }) {
   if (!props.mint) return;
   return (
-    <Card className="rounded-xl bg-[#212225] text-white p-5">
+    <Card className="rounded-xl bg-[#18191b] text-white p-5">
       <CardHeader className="flex items-center">
         <CardTitle className="w-[35%] text-base">Your Mint Address: </CardTitle>
         <CopyToClipboard>
