@@ -63,7 +63,7 @@ function TokenCard(props: { token: Token | undefined }) {
           ) : (
             <p
               aria-label="coin-name"
-              className="font-extrabold text-2xl primary-text-color"
+              className="font-bold text-lg primary-text-color"
             >
               {tokenData?.name}
             </p>
@@ -73,7 +73,7 @@ function TokenCard(props: { token: Token | undefined }) {
           ) : (
             <p
               aria-label="symbol"
-              className="text-lg font-extralight secondary-text-color"
+              className="text-base font-extralight secondary-text-color"
             >
               {tokenData?.symbol}
             </p>
@@ -86,7 +86,7 @@ function TokenCard(props: { token: Token | undefined }) {
             aria-label="market-cap"
             className={isLoading ? "space-x-2" : "flex items-baseline gap-2"}
           >
-            <p className="font-extrabold text-xl primary-text-color">
+            <p className="font-extrabold text-lg primary-text-color">
               {tokenData?.marketCap}
             </p>
             <p className="secondary-text-color text-base font-extralight">MC</p>

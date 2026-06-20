@@ -43,7 +43,7 @@ import {
 import type { Dispatch, SetStateAction } from "react";
 import type { PublicKey } from "@solana/web3.js";
 
-const VALID_FILE_TYPE = ["image/png", "image/jpg", "image/gif", "image/jpeg"];
+const VALID_FILE_TYPE = ["image/png", "image/jpg", "image/gif", "image/jpeg", "image/avif"];
 
 const formSchema = z.object({
   name: z

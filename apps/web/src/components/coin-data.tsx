@@ -9,8 +9,14 @@ import "@/components/css/token-card.css";
 import type { Token } from "types";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import CopyToClipboard from "@/components/ui/copy";
-import { Skeleton } from "./ui/skeleton";
+import { IoCopyOutline } from "react-icons/io5";
+import {
+  Dialog,
+  DialogTrigger,
+  DialogContent,
+  DialogHeader,
+} from "./ui/dialog";
+import CoinImg from "./coin-img";
 
 function CoinData() {
   const params = useParams();
@@ -58,19 +64,49 @@ function CoinData() {
     }
   }, []);
 
+  const truncateAddesss = (mint: string) => {
+    return `${mint.slice(0, 4)}...${mint.slice(mint.length - 4)}`;
+  };
+
+  const handleClick = async () => {
+    if (mint) {
+      await navigator.clipboard.writeText(mint);
+      toast.success("Address copied to clipboard");
+    }
+  };
+
   return (
     <>
       {coin && !isLoading && (
         <Card className="w-5/8 h-1/4 bg-[#18191b] rounded-lg p-5 text-white">
           <CardContent className="flex justify-between items-center">
             <div className="flex items-center gap-4">
-              <div className="w-22 h-22 aspect-square rounded-lg overflow-hidden">
-                <img
-                  src={coin.img}
-                  alt="coin-img"
-                  className="aspect-square scale-100 hover:scale-110 transition-transform duration-200"
-                />
-              </div>
+              <Dialog>
+                <DialogTrigger asChild>
+                  <div className="w-22 h-22 aspect-square rounded-lg overflow-hidden">
+                    <img
+                      src={coin.img}
+                      alt="coin-img"
+                      className="aspect-square scale-100 hover:scale-110 transition-transform duration-200"
+                    />
+                  </div>
+                </DialogTrigger>
+                <DialogContent className="flex flex-col items-center justify-center sm:max-w-[50%] bg-[#15161b] rounded-lg">
+                  <DialogHeader className="flex flex-col items-center">
+                    <span className="primary-text-color text-lg font-bold">
+                      {coin.name}
+                    </span>
+                    <span className="secondary-text-color text-sm">
+                      {coin.symbol}
+                    </span>
+                  </DialogHeader>
+                  <img
+                    src={coin.img}
+                    alt="coin-img"
+                    className="w-[70%] h-[70%] aspect-square rounded-lg"
+                  />
+                </DialogContent>
+              </Dialog>
               <div className="flex flex-col gap-2">
                 <div className="space-x-4">
                   <span className="font-extrabold text-xl">{coin.name}</span>
@@ -102,10 +138,12 @@ function CoinData() {
               </div>
             </div>
             {mint && (
-              <Badge className="bg-[#212225] p-4.5 rounded-lg">
-                <CopyToClipboard className="flex gap-5 text-lg px-2 rounded-2xl">
-                  {mint.slice(0, 6)}
-                </CopyToClipboard>
+              <Badge
+                className="bg-[#212225] p-4.5 rounded-lg text-base flex items-center gap-2 transition-all duration-150 ease-in-out active:scale-95 hover:cursor-pointer"
+                onClick={handleClick}
+              >
+                <IoCopyOutline />
+                {truncateAddesss(mint)}
               </Badge>
             )}
           </CardContent>
