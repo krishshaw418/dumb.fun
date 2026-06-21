@@ -16,7 +16,6 @@ import {
   DialogContent,
   DialogHeader,
 } from "./ui/dialog";
-import CoinImg from "./coin-img";
 
 function CoinData() {
   const params = useParams();

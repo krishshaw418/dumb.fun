@@ -23,7 +23,9 @@ import {
   FieldLabel,
 } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
-// import { useProgram } from "@/hooks/useProgram";
+import { useProgram } from "@/hooks/program";
+import BN from "bn.js";
+import { PublicKey } from "@solana/web3.js";
 
 const formSchema = z.object({
   mint: z
@@ -47,8 +49,9 @@ export function BondingCurveInitForm() {
       basePrice: 10,
     },
   });
+  const program = useProgram()?.program;
 
-  function onSubmit(data: z.infer<typeof formSchema>) {
+  async function onSubmit(data: z.infer<typeof formSchema>) {
     console.log(data);
     toast(
       JSON.stringify(
@@ -64,6 +67,29 @@ export function BondingCurveInitForm() {
         2,
       ),
     );
+
+    try {
+
+      if (!wallet.publicKey) {
+        throw new Error("Wallet publicKey is null");
+      }
+
+      if (!program) {
+        throw new Error("Program is undefined!");
+      }
+
+      const tx = await program.methods
+        .initialize(new BN(data.k), new BN(data.basePrice))
+        .accounts({
+          user: wallet.publicKey,
+          mint: new PublicKey(data.mint),
+        })
+        .rpc();
+      console.log("BondingCurve Init Tx sig:", tx);
+    } catch (error) {
+      console.error(error);
+      return;
+    }
   }
 
   return (

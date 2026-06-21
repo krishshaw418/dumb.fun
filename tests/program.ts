@@ -47,8 +47,8 @@ describe("program", () => {
         body: JSON.stringify({
           mint: mint.toString(),
           creator: user.publicKey.toString(),
-          name: "test-coin",
-          symbol: "tstc",
+          name: "best-coin",
+          symbol: "bstc",
           url: "https://gateway.irys.xyz/3cxUpdBAu8vjdwDs8U4t6CbKUPzNUWaorK4pR9nRQkiG",
           createdAt: new Date(createdAt)
         })
@@ -258,7 +258,7 @@ describe("program", () => {
           creator: user.publicKey.toString(),
           name: "test-coin",
           symbol: "tstc",
-          url: "https://api.s3.us-east.amazonaws.com",
+          url: "https://gateway.irys.xyz/3cxUpdBAu8vjdwDs8U4t6CbKUPzNUWaorK4pR9nRQkiG",
           createdAt: new Date(createdAt)
         })
       });
