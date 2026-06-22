@@ -3,6 +3,13 @@ import { Button } from "./ui/button";
 import { useState } from "react";
 import "@/components/css/token-card.css";
 import { useWallet } from "@solana/wallet-adapter-react";
+import { GearFineIcon } from "@phosphor-icons/react";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 function Swap() {
   const [isSelected, setIsSelected] = useState<"buy" | "sell">("buy");
@@ -36,7 +43,7 @@ function Swap() {
           Sell
         </Button>
       </CardHeader>
-      <CardContent className="relative flex w-full min-w-0 flex-col items-stretch gap-2 py-3">
+      <CardContent className="relative flex w-full min-w-0 flex-col items-stretch gap-2 pt-3">
         <div
           className="flex items-center justify-center gap-2 overflow-hidden min-w-0 px-2"
           style={{
@@ -94,10 +101,58 @@ function Swap() {
           </button>
         </div>
         <div className="h-4 text-center text-xs">
-          <div className="opacity-75 transform-none">
-            ≈ $369.08 · ≈ 855,393.05 MYLOO
+          <div
+            className="opacity-75 transform-none"
+            style={{
+              display: isActive ? "" : "none",
+            }}
+          >
+            ≈ $369.08 ≈ 855,393.05 MYLOO
           </div>
         </div>
+        <div className="flex gap-2 text-base py-2">
+          <button className="flex-1 items-stretch p-2">0.1 {`SOL`}</button>
+          <button className="flex-1 items-stretch p-2">0.5 {`SOL`}</button>
+          <button className="flex-1 items-stretch p-2">1 {`SOL`}</button>
+          <button className="flex items-center justify-center px-2.5">
+            <GearFineIcon className="flex items-center justify-center" />
+          </button>
+        </div>
+        <Accordion
+          type="single"
+          collapsible
+          defaultValue="item-1"
+          style={{ display: isActive ? "" : "none" }}
+          className="px-3"
+        >
+          <AccordionItem value="item-1">
+            <AccordionTrigger>
+              {"You will receive"} &#8776; {`63,985,194.9155`} {`$TEST`}
+            </AccordionTrigger>
+            <AccordionContent>
+              <ul>
+                <li className="flex justify-between">
+                  <span>Min received {`62,906,499.4949`}</span>{" "}
+                  <span>{`LASSE`}</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>Max slippage</span>
+                  <span>{`2`}%</span>
+                </li>
+                <li className="flex justify-between">
+                  <span>Network + tip</span>{" "}
+                  <span>
+                    {`0.00101`} SOL (${`0.07`})
+                  </span>
+                </li>
+                <li className="flex justify-between">
+                  <span>MEV protection</span>
+                  <span>{`Off`}</span>
+                </li>
+              </ul>
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </CardContent>
       <CardFooter
         className={`border-0 h-10 flex justify-center rounded-md mb-5 ${isSelected === "buy" ? "bg-[#1fd978] hover:bg-[#1fd978]" : "bg-[#ef4444] hover:bg-[#ef4444]"}`}
@@ -106,7 +161,11 @@ function Swap() {
           type="submit"
           className={`text-base bg-transparent hover:bg-transparent ${isSelected === "buy" ? "text-[#18191b]" : ""}`}
         >
-          {wallet.connected ? "" : "Connect wallet to trade"}
+          {wallet.connected
+            ? isSelected === "buy"
+              ? "Buy"
+              : "Sell"
+            : "Connect wallet to trade"}
         </Button>
       </CardFooter>
     </Card>
