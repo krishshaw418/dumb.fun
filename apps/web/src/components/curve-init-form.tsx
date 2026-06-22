@@ -34,8 +34,8 @@ const formSchema = z.object({
       /^[1-9A-HJ-NP-Za-km-z]+$/,
       "Create a new coin to initialize bonding curve!",
     ),
-  k: z.number("Slope required!"),
-  basePrice: z.number("Base price required!"),
+  k: z.coerce.number<number>("Slope required!").min(2),
+  basePrice: z.coerce.number<number>("Base price required!").min(1),
 });
 
 export function BondingCurveInitForm() {
@@ -146,7 +146,7 @@ export function BondingCurveInitForm() {
                         placeholder="Enter a base price for your coin (Ex: $1)"
                         autoComplete="off"
                         className="rounded-lg"
-                      ></Input>
+                      />
                       {fieldState.invalid && (
                         <FieldError errors={[fieldState.error]} />
                       )}

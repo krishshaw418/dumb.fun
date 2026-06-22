@@ -77,7 +77,7 @@ function CoinData() {
   return (
     <>
       {coin && !isLoading && (
-        <Card className="w-5/8 h-1/4 bg-[#18191b] rounded-lg p-5 text-white">
+        <Card className="bg-[#18191b] rounded-lg p-5 text-white col-span-2">
           <CardContent className="flex justify-between items-center">
             <div className="flex items-center gap-4">
               <Dialog>
