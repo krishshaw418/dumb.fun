@@ -10,6 +10,14 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import {
+  Dialog,
+  DialogHeader,
+  DialogTrigger,
+  DialogTitle,
+  DialogContent,
+} from "./ui/dialog";
+import TradeSettings from "./trade-settings";
 
 function Swap() {
   const [isSelected, setIsSelected] = useState<"buy" | "sell">("buy");
@@ -114,9 +122,21 @@ function Swap() {
           <button className="flex-1 items-stretch p-2">0.1 {`SOL`}</button>
           <button className="flex-1 items-stretch p-2">0.5 {`SOL`}</button>
           <button className="flex-1 items-stretch p-2">1 {`SOL`}</button>
-          <button className="flex items-center justify-center px-2.5">
-            <GearFineIcon className="flex items-center justify-center" />
-          </button>
+          <Dialog>
+            <DialogTrigger asChild>
+              <button className="flex items-center justify-center px-2.5">
+                <GearFineIcon className="flex items-center justify-center" />
+              </button>
+            </DialogTrigger>
+            <DialogContent
+              className="bg-[#111113] text-white rounded-lg"
+            >
+              <DialogHeader>
+                <DialogTitle className="text-base">Trade Settings</DialogTitle>
+              </DialogHeader>
+              <TradeSettings />
+            </DialogContent>
+          </Dialog>
         </div>
         <Accordion
           type="single"
