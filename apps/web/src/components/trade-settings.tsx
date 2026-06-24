@@ -3,6 +3,7 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Slider } from "./ui/slider";
 import "@/components/css/token-card.css";
+import { toast } from "sonner";
 
 function TradeSettings() {
   const defaultAmounts = window.localStorage.getItem(
@@ -126,6 +127,7 @@ function TradeSettings() {
               "tradebox.quickBuyPresets.sol",
               amounts.toString(),
             );
+            toast.success("Trade settings saved successfully!");
           }}
         >
           Save settings

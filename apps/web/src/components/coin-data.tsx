@@ -12,10 +12,13 @@ import { Badge } from "@/components/ui/badge";
 import { IoCopyOutline } from "react-icons/io5";
 import {
   Dialog,
+  DialogTitle,
+  DialogDescription,
   DialogTrigger,
   DialogContent,
   DialogHeader,
 } from "./ui/dialog";
+import { Skeleton } from "./ui/skeleton";
 
 function CoinData() {
   const params = useParams();
@@ -75,83 +78,104 @@ function CoinData() {
   };
 
   return (
-    <>
-      {coin && !isLoading && (
-        <Card className="bg-[#18191b] rounded-lg p-5 text-white col-span-2">
-          <CardContent className="flex justify-between items-center">
-            <div className="flex items-center gap-4">
-              <Dialog>
-                <DialogTrigger asChild>
-                  <div className="w-22 h-22 aspect-square rounded-lg overflow-hidden">
-                    <img
-                      src={coin.img}
-                      alt="coin-img"
-                      className="aspect-square scale-100 hover:scale-110 transition-transform duration-200"
-                    />
-                  </div>
-                </DialogTrigger>
-                <DialogContent className="flex flex-col items-center justify-center sm:max-w-[50%] bg-[#15161b] rounded-lg">
-                  <DialogHeader className="flex flex-col items-center">
-                    <span className="primary-text-color text-lg font-bold">
-                      {coin.name}
-                    </span>
-                    <span className="secondary-text-color text-sm">
-                      {coin.symbol}
-                    </span>
-                  </DialogHeader>
+    <Card className="bg-[#18191b] rounded-lg p-5 text-white col-span-2">
+      <CardContent className="flex justify-between items-center">
+        <div className="flex items-center gap-4">
+          <Dialog>
+            <DialogTrigger asChild>
+              <div className="w-22 h-22 aspect-square rounded-lg overflow-hidden">
+                {coin?.img ? (
                   <img
                     src={coin.img}
                     alt="coin-img"
-                    className="w-[70%] h-[70%] aspect-square rounded-lg"
+                    className="aspect-square scale-100 hover:scale-110 transition-transform duration-200"
                   />
-                </DialogContent>
-              </Dialog>
-              <div className="flex flex-col gap-2">
+                ) : (
+                  <Skeleton className="aspect-square" />
+                )}
+              </div>
+            </DialogTrigger>
+            <DialogContent className="flex flex-col items-center justify-center sm:max-w-[50%] bg-[#15161b] rounded-lg">
+              <DialogHeader className="flex flex-col items-center">
+                {coin?.name ? (
+                  <span className="primary-text-color text-lg font-bold">
+                    {coin.name}
+                  </span>
+                ) : (
+                  <Skeleton />
+                )}
+                <span className="secondary-text-color text-sm">
+                  {coin?.symbol}
+                </span>
+                <DialogTitle></DialogTitle>
+                <DialogDescription></DialogDescription>
+              </DialogHeader>
+              <img
+                src={coin?.img}
+                alt="coin-img"
+                className="w-[70%] h-[70%] aspect-square rounded-lg"
+              />
+            </DialogContent>
+          </Dialog>
+          <div className="flex flex-col gap-2">
+            <div>
+              {coin ? (
                 <div className="space-x-4">
                   <span className="font-extrabold text-xl">{coin.name}</span>
                   <span className="font-extrabold text-base secondary-text-color">
                     {coin.symbol}
                   </span>
                 </div>
-                {creator && (
-                  <div className="flex items-center gap-2 secondary-text-color">
-                    <Badge className="secondary-text-color bg-[#212225] border-[#9d9da6] rounded-lg">
-                      Solana
-                    </Badge>
-                    <span>
-                      <Avatar size="sm">
-                        <AvatarImage
-                          src={creator?.avatarImg}
-                          alt="@dumb-fun"
-                          className="bg-black"
-                        />
-                        <AvatarFallback>ML</AvatarFallback>
-                      </Avatar>
-                    </span>
-                    <span>{creator.pubKey.slice(0, 6)}</span>
-                    <span>
-                      {coin.createdAt} {"ago"}
-                    </span>
-                  </div>
-                )}
-              </div>
+              ) : (
+                <Skeleton className="h-4 w-full rounded-lg" />
+              )}
             </div>
-            {mint && (
-              <Badge
-                className="bg-[#212225] p-4.5 rounded-lg text-base flex items-center gap-2 transition-all duration-150 ease-in-out active:scale-95 hover:cursor-pointer"
-                onClick={handleClick}
-              >
-                <IoCopyOutline />
-                {truncateAddesss(mint)}
+            <div className="flex items-center gap-2 secondary-text-color">
+              <Badge className="secondary-text-color bg-[#212225] border-[#9d9da6] rounded-lg">
+                Solana
               </Badge>
-            )}
-          </CardContent>
-          <CardDescription className="border-0 text-white">
-            {coin.description}
-          </CardDescription>
-        </Card>
+              <span>
+                <Avatar size="sm">
+                  <AvatarImage
+                    src={creator?.avatarImg}
+                    alt="@dumb-fun"
+                    className="bg-black"
+                  />
+                  <AvatarFallback>ML</AvatarFallback>
+                </Avatar>
+              </span>
+              <span>{creator?.pubKey.slice(0, 6)}</span>
+              <span>
+                {coin?.createdAt} {"ago"}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {mint ? (
+          <Badge
+            className="bg-[#212225] p-4.5 rounded-lg text-base flex items-center gap-2 transition-all duration-150 ease-in-out active:scale-95 hover:cursor-pointer"
+            onClick={handleClick}
+          >
+            <IoCopyOutline />
+            {truncateAddesss(mint)}
+          </Badge>
+        ) : (
+          <Skeleton className="h-10 w-[15%] rounded-lg" />
+        )}
+      </CardContent>
+      {coin?.description ? (
+        <CardDescription className="border-0 text-white">
+          {coin.description}
+        </CardDescription>
+      ) : (
+        <div className="flex flex-col gap-1">
+          <Skeleton className="h-3 w-[50%] rounded-lg" />
+          <Skeleton className="h-3 w-[25%] rounded-lg" />
+          <Skeleton className="h-3 w-[15%] rounded-lg" />
+        </div>
       )}
-    </>
+    </Card>
   );
 }
 

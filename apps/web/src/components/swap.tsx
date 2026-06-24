@@ -16,6 +16,7 @@ import {
   DialogTrigger,
   DialogTitle,
   DialogContent,
+  DialogDescription,
 } from "./ui/dialog";
 import TradeSettings from "./trade-settings";
 
@@ -24,6 +25,13 @@ function Swap() {
   const [isActive, setIsActive] = useState<boolean>(false);
   const [amount, setAmount] = useState("");
   const wallet = useWallet();
+
+  const presetAmts = window.localStorage
+    .getItem("tradebox.quickBuyPresets.sol")
+    ?.split(",") ?? ["0.1", "0.5", "1"];
+  const maxSlippage = window.localStorage.getItem("max-trade-slippage")
+    ? Number(window.localStorage.getItem("max-trade-slippage"))
+    : 2;
 
   return (
     <Card className="col-span-1 rounded-lg p-5 bg-[#18191b] text-white">
@@ -119,20 +127,27 @@ function Swap() {
           </div>
         </div>
         <div className="flex gap-2 text-base py-2">
-          <button className="flex-1 items-stretch p-2">0.1 {`SOL`}</button>
-          <button className="flex-1 items-stretch p-2">0.5 {`SOL`}</button>
-          <button className="flex-1 items-stretch p-2">1 {`SOL`}</button>
+          {presetAmts.map((amt, id) => {
+            return (
+              <button
+                key={id}
+                type="button"
+                className="flex-1 items-stretch p-2"
+              >
+                {amt} SOL
+              </button>
+            );
+          })}
           <Dialog>
             <DialogTrigger asChild>
               <button className="flex items-center justify-center px-2.5">
                 <GearFineIcon className="flex items-center justify-center" />
               </button>
             </DialogTrigger>
-            <DialogContent
-              className="bg-[#111113] text-white rounded-lg"
-            >
+            <DialogContent className="bg-[#111113] text-white rounded-lg">
               <DialogHeader>
                 <DialogTitle className="text-base">Trade Settings</DialogTitle>
+                <DialogDescription></DialogDescription>
               </DialogHeader>
               <TradeSettings />
             </DialogContent>
@@ -157,7 +172,7 @@ function Swap() {
                 </li>
                 <li className="flex justify-between">
                   <span>Max slippage</span>
-                  <span>{`2`}%</span>
+                  <span>{maxSlippage}%</span>
                 </li>
                 <li className="flex justify-between">
                   <span>Network + tip</span>{" "}
