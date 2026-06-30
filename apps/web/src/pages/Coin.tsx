@@ -2,6 +2,9 @@ import { lazy, Suspense } from "react";
 const CoinData = lazy(() => import("@/components/coin-data"));
 const Swap = lazy(() => import("@/components/swap"));
 import { Skeleton } from "@/components/ui/skeleton";
+import Chart from "@/components/chart";
+import CurveProgress from "@/components/curve-progress";
+import TradeMetrics from "@/components/trade-metrics";
 
 function Coin() {
   return (
@@ -9,12 +12,19 @@ function Coin() {
       <Suspense
         fallback={<Skeleton className="h-[200] col-span-2 rounded-lg" />}
       >
-        <CoinData />
+        <div className="col-span-2 flex flex-col gap-5">
+          <CoinData />
+          <Chart />
+          <TradeMetrics/>
+        </div>
       </Suspense>
       <Suspense
         fallback={<Skeleton className="h-[400] col-span-1 rounded-lg" />}
       >
-        <Swap />
+        <div className="flex flex-col gap-5">
+          <Swap />
+          <CurveProgress />
+        </div>
       </Suspense>
     </div>
   );

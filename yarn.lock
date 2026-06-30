@@ -11204,6 +11204,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"fancy-canvas@npm:2.1.0":
+  version: 2.1.0
+  resolution: "fancy-canvas@npm:2.1.0"
+  checksum: 10c0/2b863b1548214ac793a5104154be389dbca6847c53c8bda88e4309f14bcdb498f4da21e368b573f3ab5f458d3b47c3f0ef731a7b90c8264b23c1cf0bfc9d1da3
+  languageName: node
+  linkType: hard
+
 "fast-check@npm:^3.23.1":
   version: 3.23.2
   resolution: "fast-check@npm:3.23.2"
@@ -12905,6 +12912,15 @@ __metadata:
     lightningcss-win32-x64-msvc:
       optional: true
   checksum: 10c0/70945bd55097af46fc9fab7f5ed09cd5869d85940a2acab7ee06d0117004a1d68155708a2d462531cea2fc3c67aefc9333a7068c80b0b78dd404c16838809e03
+  languageName: node
+  linkType: hard
+
+"lightweight-charts@npm:^5.2.0":
+  version: 5.2.0
+  resolution: "lightweight-charts@npm:5.2.0"
+  dependencies:
+    fancy-canvas: "npm:2.1.0"
+  checksum: 10c0/73e67701445397c3aec4887d94e8cbd29fa1f19086146a5372a24a697795e4e0fd9404e9d699f255b3a8865fe0bcc14e958cb4e13ea96ec270f1a9bb2f0b750e
   languageName: node
   linkType: hard
 
@@ -17183,6 +17199,7 @@ __metadata:
     eslint-plugin-react-hooks: "npm:^7.0.1"
     eslint-plugin-react-refresh: "npm:^0.5.2"
     globals: "npm:^17.4.0"
+    lightweight-charts: "npm:^5.2.0"
     next-themes: "npm:^0.4.6"
     radix-ui: "npm:^1.5.0"
     react: "npm:^19.2.4"

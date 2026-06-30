@@ -27,7 +27,6 @@ function CoinData() {
   const [creator, setCreator] = useState<
     { pubKey: string; avatarImg: string } | undefined
   >(undefined);
-  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     const fetchCoinData = async (mint: string) => {
@@ -52,7 +51,6 @@ function CoinData() {
 
         if (structuredTokenData) {
           setCoin(structuredTokenData);
-          setIsLoading(false);
         } else {
           console.error("Failed to structure coin data!");
         }
@@ -78,7 +76,7 @@ function CoinData() {
   };
 
   return (
-    <Card className="bg-[#18191b] rounded-lg p-5 text-white col-span-2">
+    <Card className="bg-[#18191b] rounded-lg p-5 text-white border border-[#212225]">
       <CardContent className="flex justify-between items-center">
         <div className="flex items-center gap-4">
           <Dialog>
@@ -132,7 +130,7 @@ function CoinData() {
             </div>
             <div className="flex items-center gap-2 secondary-text-color">
               <Badge className="secondary-text-color bg-[#212225] border-[#9d9da6] rounded-lg">
-                Solana
+                {"Solana"}
               </Badge>
               <span>
                 <Avatar size="sm">
@@ -141,13 +139,23 @@ function CoinData() {
                     alt="@dumb-fun"
                     className="bg-black"
                   />
-                  <AvatarFallback>ML</AvatarFallback>
+                  <AvatarFallback>
+                    <Skeleton className="aspect-square rounded-full" />
+                  </AvatarFallback>
                 </Avatar>
               </span>
-              <span>{creator?.pubKey.slice(0, 6)}</span>
-              <span>
-                {coin?.createdAt} {"ago"}
-              </span>
+              {creator?.pubKey ? (
+                <span>{creator.pubKey.slice(0, 6)}</span>
+              ) : (
+                <Skeleton className="h-2 w-10 rounded-lg" />
+              )}
+              {coin?.createdAt ? (
+                <span>
+                  {coin?.createdAt} {"ago"}
+                </span>
+              ) : (
+                <Skeleton className="aspect-square rounded-full" />
+              )}
             </div>
           </div>
         </div>

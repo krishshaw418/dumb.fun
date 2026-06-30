@@ -34,7 +34,7 @@ function Swap() {
     : 2;
 
   return (
-    <Card className="col-span-1 rounded-lg p-5 bg-[#18191b] text-white">
+    <Card className="col-span-1 rounded-lg p-5 bg-[#18191b] text-white border border-[#212225]">
       <CardHeader className="grid grid-cols-2">
         <Button
           type="button"
