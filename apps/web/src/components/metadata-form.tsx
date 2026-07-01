@@ -31,7 +31,6 @@ import {
   InputGroupText,
   InputGroupTextarea,
 } from "@/components/ui/input-group";
-import axios, { AxiosError } from "axios";
 import { useUmi } from "@/lib/umi-provider";
 import { createGenericFile } from "@metaplex-foundation/umi";
 import { useCreateMint } from "@/hooks/createMint";
@@ -42,6 +41,7 @@ import {
 } from "@solana/wallet-adapter-base";
 import type { Dispatch, SetStateAction } from "react";
 import type { PublicKey } from "@solana/web3.js";
+import { ws } from "@/lib/socket";
 
 const VALID_FILE_TYPE = ["image/png", "image/jpg", "image/gif", "image/jpeg", "image/avif"];
 
@@ -85,8 +85,6 @@ export function TokenCreateForm(props: {
   const umi = useUmi();
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
-    console.log(data);
-    console.log(data.image instanceof File);
     const bytes = await data.image.arrayBuffer();
     try {
       const umiFile = createGenericFile(
@@ -120,25 +118,24 @@ export function TokenCreateForm(props: {
 
       props.setMint(result.mint.publicKey);
 
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_API_URL}/api/new-token`,
-        {
-          mint: result.mint.publicKey.toBase58(),
-          creator: wallet.publicKey?.toBase58(),
-          createdAt: new Date(Date.now()).toISOString(),
-          name: metaData.name,
-          symbol: metaData.symbol,
-          url: metaDataJsonUri,
-        },
+      ws.send(
+        JSON.stringify({
+          event: "new-token",
+          data: {
+            mint: result.mint.publicKey.toBase58(),
+            creator: wallet.publicKey?.toBase58(),
+            createdAt: new Date(Date.now()).toISOString(),
+            name: metaData.name,
+            symbol: metaData.symbol,
+            url: metaDataJsonUri,
+          }
+        })
       );
 
       form.reset();
-      toast.success(response.data.message);
+      toast.success("Created new token!");
     } catch (error) {
       console.error(error);
-      if (error instanceof AxiosError) {
-        console.log(error.response?.data.error);
-      }
       if (error instanceof WalletSignTransactionError) {
         console.log(error.message);
         toast.error(error.message);

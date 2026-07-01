@@ -5,7 +5,7 @@
   "type": "commonjs",
   "license": "MIT",
   "scripts": {
-    "dev": "ts-node ./src/index.ts",
+    "dev": "nodemon ./src/index.ts",
     "build": "tsc",
     "start": "node ./dist/src/index.js"
   },
@@ -13,6 +13,8 @@
     "@types/cors": "^2.8.19",
     "@types/express": "^5.0.6",
     "@types/node": "^25.9.2",
+    "@types/ws": "^8.18.1",
+    "nodemon": "^3.1.14",
     "ts-node": "^10.9.2",
     "types": "workspace:*",
     "typescript": "^5.9.3"
@@ -22,6 +24,7 @@
     "db": "workspace:*",
     "dotenv": "^17.4.2",
     "express": "^5.2.1",
+    "ws": "^8.21.0",
     "zod": "^4.4.3"
   }
 }

@@ -13,3 +13,8 @@ export const newTokenSchema = z.object({
     symbol: z.string().max(10, "Max 10 characters allowed!"),
     url: z.url().max(2048, "Max 2,048 characters allowed!"),
 });
+
+export const socketMsg = z.object({
+    event: z.string(),
+    data: z.any()
+});

@@ -1,7 +1,7 @@
 import { useWallet, useConnection } from "@solana/wallet-adapter-react";
 import { Keypair, SystemProgram, Transaction } from "@solana/web3.js";
 import {
-  TOKEN_PROGRAM_ID,
+  TOKEN_2022_PROGRAM_ID,
   MINT_SIZE,
   createInitializeMintInstruction,
 } from "@solana/spl-token";
@@ -22,19 +22,19 @@ export function useCreateMint() {
     );
 
     const transaction = new Transaction().add(
-      SystemProgram.createAccount({
+      SystemProgram.createAccount({ // To create a new account owned by the system account
         fromPubkey: wallet.publicKey!,
         newAccountPubkey: mint.publicKey,
         lamports: mintRent,
         space: MINT_SIZE,
-        programId: TOKEN_PROGRAM_ID,
+        programId: TOKEN_2022_PROGRAM_ID, // The ownership is transfered to the Token 2022 Program after account is created
       }),
-      createInitializeMintInstruction(
+      createInitializeMintInstruction( // To initialize the newly created acc as the new Mint
         mint.publicKey,
         6,
         wallet.publicKey!,
         wallet.publicKey!,
-        TOKEN_PROGRAM_ID,
+        TOKEN_2022_PROGRAM_ID,
       ),
     );
 
