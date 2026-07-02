@@ -42,6 +42,7 @@ import {
 import type { Dispatch, SetStateAction } from "react";
 import type { PublicKey } from "@solana/web3.js";
 import { ws } from "@/lib/socket";
+import { useTokenStore } from "@/store/token-store";
 
 const VALID_FILE_TYPE = ["image/png", "image/jpg", "image/gif", "image/jpeg", "image/avif"];
 
@@ -83,6 +84,7 @@ export function TokenCreateForm(props: {
     },
   });
   const umi = useUmi();
+  const addToken = useTokenStore((state) => state.addToken);
 
   async function onSubmit(data: z.infer<typeof formSchema>) {
     const bytes = await data.image.arrayBuffer();
@@ -118,19 +120,29 @@ export function TokenCreateForm(props: {
 
       props.setMint(result.mint.publicKey);
 
+      const token = {
+        mint: result.mint.publicKey.toBase58(),
+        creator: wallet.publicKey?.toBase58(),
+        createdAt: new Date(Date.now()).toISOString(),
+        name: metaData.name,
+        symbol: metaData.symbol,
+        url: metaDataJsonUri,
+      };
+
       ws.send(
         JSON.stringify({
           event: "new-token",
-          data: {
-            mint: result.mint.publicKey.toBase58(),
-            creator: wallet.publicKey?.toBase58(),
-            createdAt: new Date(Date.now()).toISOString(),
-            name: metaData.name,
-            symbol: metaData.symbol,
-            url: metaDataJsonUri,
-          }
+          data: token
         })
       );
+
+      addToken({
+        ...metaData,
+        mint: token.mint,
+        creator: token.creator as string,
+        createdAt: new Date(token.createdAt),
+        url: metaDataJsonUri
+      });
 
       form.reset();
       toast.success("Created new token!");

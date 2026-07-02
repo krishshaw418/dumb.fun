@@ -1,11 +1,12 @@
 import TokenCard from "./token-card";
-import { useState, useEffect } from "react";
-import type { Token } from "types";
+import { useEffect } from "react";
 import axios from "axios";
 import { toast } from "sonner";
+import { useTokenStore } from "@/store/token-store";
 
 function TokenContainer() {
-  const [tokens, setTokens] = useState<Token[] | null>(null);
+  const tokens = useTokenStore((state) => state.tokens);
+  const setTokens = useTokenStore((state) => state.setTokens);
 
   useEffect(() => {
     const fetchAllTokens = async () => {
@@ -29,11 +30,11 @@ function TokenContainer() {
     };
 
     fetchAllTokens();
-  }, []);
+  }, [tokens]);
 
   return (
     <div className="grid gap-5 grid-row-auto sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 sm:justify-center">
-      {tokens && tokens.map((token, id) => {
+      {tokens.map((token, id) => {
         return (
           <TokenCard key={id} token={token}/>
         )
